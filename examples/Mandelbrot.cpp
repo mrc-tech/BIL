@@ -18,9 +18,11 @@ int main()
 	
 	for(int y=0; y<fractal.height(); y++){
 		for(int x=0; x<fractal.width(); x++){
-			cr = 1.5 *(2.0 * x / fractal.width()  - 1.0) - 0.5;
-			ci =      (2.0 * y / fractal.height() - 1.0);
+			double ratio = fractal.width() / fractal.height();
+			cr = ratio *(2.0 * x / fractal.width()  - 1.0) - (ratio/2); //MIGLIORARE
+			ci =        (2.0 * y / fractal.height() - 1.0);
 			
+			// z(0) = 0
 			nextr = nexti = 0;
 			prevr = previ = 0;
 			
@@ -28,6 +30,7 @@ int main()
 				prevr = nextr;
 				previ = nexti;
 				
+				// z(i+1) = z(i)^2 + c
 				nextr =     prevr*prevr - previ*previ + cr;
 				nexti = 2 * prevr*previ + ci;
 				
