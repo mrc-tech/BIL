@@ -99,31 +99,7 @@ void Image::save_bmp(const std::string& fileName) const
 
 // PALETTE =================================================================================================================================
 
-enum palette_name{
-	e_red,           e_scarlet,      e_vermilion,        e_tangelo,         e_orange,
-	e_gamboge,       e_amber,        e_gold,             e_yellow,          e_apple_green,
-	e_lime_green,    e_spring_bud,   e_chartreuse_green, e_pistachio,       e_harlequin,
-	e_sap_green,     e_green,        e_emerald_green,    e_malachite_green, e_sea_green,
-	e_spring_green,  e_aquamarine,   e_turquoise,        e_opal,            e_cyan,
-	e_arctic_blue,   e_cerulean,     e_cornflower_blue,  e_azure,           e_cobalt_blue,
-	e_sapphire_blue, e_phthalo_blue, e_blue,             e_persian_blue,    e_indigo,
-	e_blue_violet,   e_violet,       e_purple,           e_mulberry,        e_heliotrope,
-	e_magenta,       e_orchid,       e_fuchsia,          e_cerise,          e_rose,
-	e_raspberry,     e_crimson,      e_amaranth,         e_white,           e_black
-};
-
-const color palette_colormap[] = {
-	{255,   0,   0}, {255,  31,   0}, {255,  63,   0}, {255,  95,   0}, {255, 127,   0},
-	{255, 159,   0}, {255, 191,   0}, {255, 223,   0}, {255, 255,   0}, {223, 255,   0},
-	{191, 255,   0}, {159, 255,   0}, {127, 255,   0}, { 95, 255,   0}, { 63, 255,   0},
-	{ 31, 255,   0}, {  0, 255,   0}, {  0, 255,  31}, {  0, 255,  63}, {  0, 255,  95},
-	{  0, 255, 127}, {  0, 255, 159}, {  0, 255, 191}, {  0, 255, 223}, {  0, 255, 255},
-	{  0, 223, 255}, {  0, 191, 255}, {  0, 159, 255}, {  0, 127, 255}, {  0,  95, 255},
-	{  0,  63, 255}, {  0,  31, 255}, {  0,   0, 255}, { 31,   0, 255}, { 63,   0, 255},
-	{ 95,   0, 255}, {127,   0, 255}, {159,   0, 255}, {191,   0, 255}, {223,   0, 255},
-	{255,   0, 255}, {255,   0, 223}, {255,   0, 191}, {255,   0, 159}, {255,   0, 127},
-	{255,   0,  95}, {255,   0,  63}, {255,   0,  31}, {255, 255, 255}, {  0,   0,   0}
-};
+#include "palette.hpp"
 
 
 
