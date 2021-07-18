@@ -43,8 +43,8 @@ int main()
 					
 					const unsigned int index = static_cast<unsigned int> (1000.0 * log2(1.75 + i - log2(log2(z))) / log2(max_iterations)); //https://en.wikipedia.org/wiki/Mandelbrot_set#Continuous_.28smooth.29_coloring
 					
-//					fractal.set_pixel(x,y, yarg_colormap[index]);
-					fractal.set_pixel(x,y, copper_colormap[index]);
+					fractal.set_pixel(x,y, yarg_colormap[index]);
+//					fractal.set_pixel(x,y, copper_colormap[index]);
 					
 					break;
 				}
