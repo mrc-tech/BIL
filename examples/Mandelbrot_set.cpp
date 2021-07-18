@@ -1,13 +1,13 @@
 #include <cmath>
 
 #include "../include/Image.hpp"
-
+#include "../include/utils/UTILS.h"
 
 
 
 int main()
 {
-	Image fractal(800,600);
+	Image fractal(1000,600); //1000x600 is 5/3 ~= 1.667 (circa golden raio 1.618...)
 	fractal.clear();
 	
 	double cr,    ci;
@@ -18,9 +18,11 @@ int main()
 	
 	for(int y=0; y<fractal.height(); y++){
 		for(int x=0; x<fractal.width(); x++){
-			double ratio = fractal.width() / fractal.height();
-			cr = ratio *(2.0 * x / fractal.width()  - 1.0) - (ratio/2); //MIGLIORARE
-			ci =        (2.0 * y / fractal.height() - 1.0);
+			double ratio = (double) fractal.width() / fractal.height();
+			double xmin, xmax = 1, ymin = -1, ymax = 1;
+			xmin = xmax - ratio * (ymax-ymin); //comes from keep-aspect-ratio equation: width/height = (xmax-xmin)/(ymax-ymin)
+			cr = interp1({0,(double)fractal.width()},  {xmin,xmax}, (double)x); //maps from {0, width} to {xmin, xmax}
+			ci = interp1({0,(double)fractal.height()}, {ymax,ymin}, (double)y); //maps from {0, height} to {ymax, ymin} (reversed axis)
 			
 			// z(0) = 0
 			nextr = nexti = 0;
@@ -30,7 +32,7 @@ int main()
 				prevr = nextr;
 				previ = nexti;
 				
-				// z(i+1) = z(i)^2 + c
+				// z(n+1) = z(n)^2 + c
 				nextr =     prevr*prevr - previ*previ + cr;
 				nexti = 2 * prevr*previ + ci;
 				

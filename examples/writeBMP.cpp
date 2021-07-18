@@ -23,7 +23,7 @@ int main()
 		}
 	}
 	
-	writeBMP("writeBMP_test.bmp", width,height, data);
+	writeBMP("writeBMP.bmp", width,height, data);
 	
 	return 0;
 }

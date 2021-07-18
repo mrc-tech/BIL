@@ -1,0 +1,13 @@
+GENERALE:
+ - Rinominare il nome del repository se implemento anche i PNG
+
+
+ESEMPI:
+ - utilizzo del Perlin Noise
+
+IMAGE:
+ - metodi per disegnare forme geometriche base
+ - implementare anche il formato PNG
+
+FIGURE:
+ - scrivere la classe per gestire figure con coordinate cartesiane double, e quindi anche per creare immagini vettoriali
