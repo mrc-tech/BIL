@@ -29,52 +29,37 @@ void writeBMP(std::string filename,int rows,int cols,int R[],int G[], int B[])
 	
 	
 	//################################### FILE HEADER ###################################
-	//intestazione "BM"
-	temp = 0x4D42; //al contrario a causa del bigendian 
-	file.write((char*)&temp,2);
-	//dimensione del file
-	temp = 54 + 3*rows*cols + (3*cols)%4;//dimensione del file (54 bytes di header + dati RGB + zeri per raggiungere multipli di 4 byte)
-	file.write((char*)&temp,4);
-	//spazio riservato
-	temp = 0;
-	file.write((char*)&temp,4);
-	//offset dell'header (da dove iniziano i dati)
-	temp = 54;
-	file.write((char*)&temp,4);
+	//intestazione "BM":
+	temp = 0x4D42;	file.write((char*)&temp,2); //al contrario a causa del bigendian 
+	//dimensione del file:
+	temp = 54 + 3*rows*cols + (3*cols)%4; file.write((char*)&temp,4); //dimensione del file (54 bytes di header + dati RGB + zeri per raggiungere multipli di 4 byte)
+	//spazio riservato:
+	temp = 0;		file.write((char*)&temp,4);
+	//offset dell'header (da dove iniziano i dati):
+	temp = 54;		file.write((char*)&temp,4);
 	//################################### DIB HEADER ###################################
-	//lunghezza in byte di questo header
-	temp = 40;
-	file.write((char*)&temp,4);
-	//Larghezza in pixel del bitmap
-	temp = cols;
-	file.write((char*)&temp,4);
-	//Altezza in pixel del bitmap
-	temp = rows;
-	file.write((char*)&temp,4);
-	//numero di piani (vale sempre 1)
-	temp = 1;
-	file.write((char*)&temp,2);
-	//numero di bit (colore) per pixel
-	temp = 24; //24bit
-	file.write((char*)&temp,2);
-	//compressione
-	temp = 0; //nessuna compressione
-	file.write((char*)&temp,4);
-	//Dimensione in byte dell'immagine bitmap senza le 3 sezioni iniziali
-	temp = 3*rows*cols + (3*rows*cols)%4;
-	file.write((char*)&temp,4);
-	//Risoluzione orizzontale in px al mt
-	temp = 0x0B13; //2.835 pixel/metro
-	file.write((char*)&temp,4);
-	//Risoluzione verticale in px al mt
-	temp = 0x0B13; //2.835 pixel/metro
-	file.write((char*)&temp,4);
-	//Numero di colori da considerare nella palette (0 indica tutti)
-	temp = 0;
-	file.write((char*)&temp,4);
-	//zero indica che tutti i colori sono importanti
-	temp = 0;
-	file.write((char*)&temp,4);
+	//lunghezza in byte di questo header:
+	temp = 40;		file.write((char*)&temp,4);
+	//Larghezza in pixel del bitmap:
+	temp = cols;	file.write((char*)&temp,4);
+	//Altezza in pixel del bitmap:
+	temp = rows;	file.write((char*)&temp,4);
+	//numero di piani (vale sempre 1):
+	temp = 1;		file.write((char*)&temp,2);
+	//numero di bit (colore) per pixel:
+	temp = 24;		file.write((char*)&temp,2); //24bit (3 x 8bit)
+	//compressione:
+	temp = 0;		file.write((char*)&temp,4); //nessuna compressione
+	//Dimensione in byte dell'immagine bitmap senza le 3 sezioni iniziali:
+	temp = 3*rows*cols + (3*rows*cols)%4;	file.write((char*)&temp,4);
+	//Risoluzione orizzontale in px al mt:
+	temp = 0x0B13;	file.write((char*)&temp,4); //2.835 pixel/metro
+	//Risoluzione verticale in px al mt:
+	temp = 0x0B13;	file.write((char*)&temp,4); //2.835 pixel/metro
+	//Numero di colori da considerare nella palette (0 indica tutti):
+	temp = 0;		file.write((char*)&temp,4);
+	//zero indica che tutti i colori sono importanti:
+	temp = 0;		file.write((char*)&temp,4);
 	
 	//################################### DATI ###################################
 	
@@ -122,11 +107,12 @@ void writeBMP_hex(std::string filename,int rows,int cols,int mat[])
 	int * R = new int[rows * cols];
 	int * G = new int[rows * cols];
 	int * B = new int[rows * cols];
-	for(int r=rows-1;r>=0;r++)
+	for(int r=0;r<rows;r++)
 		for(int c=0;c<cols;c++){
-			R[r*cols+c] = mat[r*cols+c] ^ 0xFF0000;
-			G[r*cols+c] = mat[r*cols+c] ^ 0x00FF00;
-			B[r*cols+c] = mat[r*cols+c] ^ 0x0000FF;
+			// BGR perchè è in Big Endian
+			B[r*cols+c] = (mat[r*cols+c] & 0xFF0000) >> 16;
+			G[r*cols+c] = (mat[r*cols+c] & 0x00FF00) >> 8;
+			R[r*cols+c] = (mat[r*cols+c] & 0x0000FF);
 		}
 			
 	writeBMP(filename, rows,cols, R,G,B);
