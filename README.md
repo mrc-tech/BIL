@@ -6,5 +6,5 @@ C++ library for images
  - inserire anche una classe per gestire le immagini `PNG`. Dato che pesano meno dei bmp e vengono lette senza problemi da LaTeX (al contrario dei bitmap). Se inserisco il modo di gestire altri formati questo repository invece di "**Bitmap**" dovrebbe chiamarsi "**Image**"
  - fare l'esempio di _Perlin noise_ (studiare meglio come fare)
  - Se implemento i `PNG` e i `JPG` devo cambiare nome al repository in **Image**
- - Metodi per generare le figure geometriche fondamentali in `image` (mancano l'arco di cerchio, l'ellisse, la curva di bezier, le splines, i poligoni regolari, etc.)
+ - Metodi per generare le figure geometriche fondamentali in `image` (mancano l'arco di cerchio, l'ellisse, le splines, i poligoni regolari, etc.)
  - 
