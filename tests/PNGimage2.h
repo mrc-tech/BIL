@@ -1,3 +1,12 @@
+/****************************************************
+                     PNG image
+
+ToDo:
+ - forse dovrei mettere le funzioni di calcolo del
+   CRC32B nella libreria "zlib"
+ - 
+
+****************************************************/
 #ifndef MRC_PNG_IMAGE
 #define MRC_PNG_IMAGE
 
@@ -5,7 +14,7 @@
 #include "zlib.h"
 
 #include <iostream> //TEMPORANEO, PER IL DEBUG
-//#include <boost/crc> NON FUNZIONA (non ce l'ho)
+
 
 
 class PNGimage : public BasicImage
@@ -52,7 +61,7 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	temp.push_back((_width &0xFF000000)>>24); temp.push_back((_width &0x00FF0000)>>16); temp.push_back((_width &0x0000FF00)>>8); temp.push_back((_width &0x000000FF)); //image Width  (Big-Endian)
 	temp.push_back((_height&0xFF000000)>>24); temp.push_back((_height&0x00FF0000)>>16); temp.push_back((_height&0x0000FF00)>>8); temp.push_back((_height&0x000000FF)); //image Height (Big-Endian)
 	temp.push_back(8); // bit depth (1 byte, values 1, 2, 4, 8, or 16)
-	temp.push_back(2); // color type (1 byte, values 0, 2, 3, 4, or 6)
+	temp.push_back(2); // color type (1 byte, values 0:grayscale, 2:RGB, 3:indexed(palette), 4:grayscale&alpha, or 6:RGBA)
 	temp.push_back(0); // compression method (1 byte, value 0)
 	temp.push_back(0); // filter method (1 byte, value 0)
 	temp.push_back(0); // interlace method (1 byte, values 0 "no interlace" or 1 "Adam7 interlace")
@@ -275,6 +284,7 @@ unsigned int PNGimage::crc32(unsigned char *buffer, int len)
 {
 	// CRC32B:
 	// Reflected: 0xEDB88320: &1 >> [128] = poly , [ 8] = poly >> 8 VALID
+	// Poly: x^32+x^26+x^23+x^22+x^16+x^12+x^11+x^10+x^8+x^7+x^5+x^4+x^2+x+1
 	static unsigned int crc_table[256] = {
 		0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
 		0x0eDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91,
@@ -338,6 +348,25 @@ unsigned int PNGimage::crc32(unsigned char *buffer, int len)
 //}
 
 
+
+
+
+
+
+// PNG SPECIFICATION ================================================================================================================================
+
+
+/*****************************************************************************************
+Color Type and Allowed Bit Depth:
+   Color    Allowed    Interpretation
+   Type    Bit Depths
+   
+   0       1,2,4,8,16  Each pixel is a grayscale sample.
+   2       8,16        Each pixel is an R,G,B triple.
+   3       1,2,4,8     Each pixel is a palette index; a PLTE chunk must appear.
+   4       8,16        Each pixel is a grayscale sample, followed by an alpha sample.
+   6       8,16        Each pixel is an R,G,B triple, followed by an alpha sample.
+******************************************************************************************/
 
 
 #endif

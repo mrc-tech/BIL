@@ -69,6 +69,8 @@ BasicImage::BasicImage(const unsigned int width, const unsigned int height)
 
 void BasicImage::set_pixel(const unsigned int x, const unsigned int y, const unsigned char red, const unsigned char green, const unsigned char blue)
 {
+	if( (x<0) || (y<0) || (x>=static_cast<int>(_width)) || (y>=static_cast<int>(_height)) ) return;
+	
 	// Set pixel color in BGR mode
 	const unsigned int y_offset = y * bytes_per_row;
 	const unsigned int x_offset = x * bytes_per_pixel;
@@ -82,6 +84,8 @@ void BasicImage::set_pixel(const unsigned int x, const unsigned int y, const uns
 
 void BasicImage::get_pixel(const unsigned int x, const unsigned int y, unsigned char& red, unsigned char& green, unsigned char& blue) const
 {
+	if( (x<0) || (y<0) || (x>=static_cast<int>(_width)) || (y>=static_cast<int>(_height)) ) return;
+	
 	// Get pixel color in BGR mode
 	const unsigned int y_offset = y * bytes_per_row;
 	const unsigned int x_offset = x * bytes_per_pixel;

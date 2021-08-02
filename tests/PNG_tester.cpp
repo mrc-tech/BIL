@@ -11,9 +11,7 @@ int main()
 	PNGimage img(1,1);
 	
 	
-//	for(auto i=0; i<10; i++)
-//		for(auto j=0; j<10; j++)
-//			img.set_pixel(i,j, 0xFF,0xAD,0x00);
+	for(auto i=0; i<10; i++) for(auto j=0; j<10; j++) img.set_pixel(i,j, 0xFF,0xAD,0x00);
 	
 	img.save_file("prova.png", 10*3);
 	

@@ -1,0 +1,98 @@
+
+    W3C: <http://www.w3.org/> REC-png.html
+
+
+  PNG (Portable Network Graphics) Specification
+
+
+  Version 1.0
+
+
+      W3C Recommendation /01-October-1996/
+
+------------------------------------------------------------------------
+Previous page <https://www.w3.org/TR/PNG-Chunks.html>
+Next page <https://www.w3.org/TR/PNG-Filters.html>
+Table of contents <https://www.w3.org/TR/png.html>
+------------------------------------------------------------------------
+
+
+    5. Deflate/Inflate Compression
+
+PNG compression method 0 (the only compression method presently defined
+for PNG) specifies deflate/inflate compression with a 32K sliding
+window. Deflate compression is an LZ77 derivative used in zip, gzip,
+pkzip and related programs. Extensive research has been done supporting
+its patent-free status. Portable C implementations are freely available.
+
+Deflate-compressed datastreams within PNG are stored in the "zlib"
+format, which has the structure:
+
+   Compression method/flags code: 1 byte
+   Additional flags/check bits:   1 byte
+   Compressed data blocks:        n bytes
+   Check value:                   4 bytes
+
+Further details on this format are given in the zlib specification
+[RFC-1950] <ftp://ds.internic.net/rfc/rfc1950.txt>.
+
+For PNG compression method 0, the zlib compression method/flags code
+must specify method code 8 ("deflate" compression) and an LZ77 window
+size of not more than 32K. Note that the zlib compression method number
+is not the same as the PNG compression method number. The additional
+flags must not specify a preset dictionary.
+
+The compressed data within the zlib datastream is stored as a series of
+blocks, each of which can represent raw (uncompressed) data,
+LZ77-compressed data encoded with fixed Huffman codes, or
+LZ77-compressed data encoded with custom Huffman codes. A marker bit in
+the final block identifies it as the last block, allowing the decoder to
+recognize the end of the compressed datastream. Further details on the
+compression algorithm and the encoding are given in the deflate
+specification [RFC-1951] <ftp://ds.internic.net/rfc/rfc1951.txt>.
+
+The check value stored at the end of the zlib datastream is calculated
+on the uncompressed data represented by the datastream. Note that the
+algorithm used is not the same as the CRC calculation used for PNG chunk
+check values. The zlib check value is useful mainly as a cross-check
+that the deflate and inflate algorithms are implemented correctly.
+Verifying the chunk CRCs provides adequate confidence that the PNG file
+has been transmitted undamaged.
+
+In a PNG file, the concatenation of the contents of all the IDAT chunks
+makes up a zlib datastream as specified above. This datastream
+decompresses to filtered image data as described elsewhere in this
+document.
+
+It is important to emphasize that the boundaries between IDAT chunks are
+arbitrary and can fall anywhere in the zlib datastream. There is not
+necessarily any correlation between IDAT chunk boundaries and deflate
+block boundaries or any other feature of the zlib data. For example, it
+is entirely possible for the terminating zlib check value to be split
+across IDAT chunks.
+
+In the same vein, there is no required correlation between the structure
+of the image data (i.e., scanline boundaries) and deflate block
+boundaries or IDAT chunk boundaries. The complete image data is
+represented by a single zlib datastream that is stored in some number of
+IDAT chunks; a decoder that assumes any more than this is incorrect. (Of
+course, some encoder implementations may emit files in which some of
+these structures are indeed related. But decoders cannot rely on this.)
+
+PNG also uses zlib datastreams in zTXt chunks. In a zTXt chunk, the
+remainder of the chunk following the compression method byte is a zlib
+datastream as specified above. This datastream decompresses to the
+user-readable text described by the chunk's keyword. Unlike the image
+data, such datastreams are not split across chunks; each zTXt chunk
+contains an independent zlib datastream.
+
+Additional documentation and portable C code for deflate and inflate are
+available from the Info-ZIP archives at
+|<URL:ftp://ftp.uu.net/pub/archiving/zip/>|
+<ftp://ftp.uu.net/pub/archiving/zip/>.
+
+------------------------------------------------------------------------
+Previous page <https://www.w3.org/TR/PNG-Chunks.html>
+Next page <https://www.w3.org/TR/PNG-Filters.html>
+Table of contents <https://www.w3.org/TR/png.html>
+------------------------------------------------------------------------

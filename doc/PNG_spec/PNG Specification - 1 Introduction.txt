@@ -1,0 +1,103 @@
+
+    W3C: <http://www.w3.org/> REC-png.html
+
+
+  PNG (Portable Network Graphics) Specification
+
+
+  Version 1.0
+
+
+      W3C Recommendation /01-October-1996/
+
+------------------------------------------------------------------------
+Previous page <https://www.w3.org/TR/png.html>
+Next page <https://www.w3.org/TR/PNG-DataRep.html>
+Table of contents <https://www.w3.org/TR/png.html>
+------------------------------------------------------------------------
+
+
+    1. Introduction
+
+The PNG format provides a portable, legally unencumbered,
+well-compressed, well-specified standard for lossless bitmapped image
+files.
+
+Although the initial motivation for developing PNG was to replace GIF,
+the design provides some useful new features not available in GIF, with
+minimal cost to developers.
+
+GIF features retained in PNG include:
+
+  * Indexed-color images of up to 256 colors.
+  * Streamability: files can be read and written serially, thus allowing
+    the file format to be used as a communications protocol for
+    on-the-fly generation and display of images.
+  * Progressive display: a suitably prepared image file can be displayed
+    as it is received over a communications link, yielding a
+    low-resolution image very quickly followed by gradual improvement of
+    detail.
+  * Transparency: portions of the image can be marked as transparent,
+    creating the effect of a non-rectangular image.
+  * Ancillary information: textual comments and other data can be stored
+    within the image file.
+  * Complete hardware and platform independence.
+  * Effective, 100% lossless compression. 
+
+Important new features of PNG, not available in GIF, include:
+
+  * Truecolor images of up to 48 bits per pixel.
+  * Grayscale images of up to 16 bits per pixel.
+  * Full alpha channel (general transparency masks).
+  * Image gamma information, which supports automatic display of images
+    with correct brightness/contrast regardless of the machines used to
+    originate and display the image.
+  * Reliable, straightforward detection of file corruption.
+  * Faster initial presentation in progressive display mode. 
+
+PNG is designed to be:
+
+  * Simple and portable: developers should be able to implement PNG easily.
+  * Legally unencumbered: to the best knowledge of the PNG authors, no
+    algorithms under legal challenge are used. (Some considerable effort
+    has been spent to verify this.)
+  * Well compressed: both indexed-color and truecolor images are
+    compressed as effectively as in any other widely used lossless
+    format, and in most cases more effectively.
+  * Interchangeable: any standard-conforming PNG decoder must read all
+    conforming PNG files.
+  * Flexible: the format allows for future extensions and private
+    add-ons, without compromising interchangeability of basic PNG.
+  * Robust: the design supports full file integrity checking as well as
+    simple, quick detection of common transmission errors. 
+
+The main part of this specification gives the definition of the file
+format and recommendations for encoder and decoder behavior. An appendix
+gives the rationale for many design decisions. Although the rationale is
+not part of the formal specification, reading it can help implementors
+understand the design. Cross-references in the main text point to
+relevant parts of the rationale. Additional appendixes, also not part of
+the formal specification, provide tutorials on gamma and color theory as
+well as other supporting material.
+
+In this specification, the word "must" indicates a mandatory
+requirement, while "should" indicates recommended behavior.
+
+See Rationale: Why a new file format?
+<https://www.w3.org/TR/PNG-Rationale.html#R.Why-a-new-file-format>, Why
+these features?
+<https://www.w3.org/TR/PNG-Rationale.html#R.Why-these-features>, Why not
+these features?
+<https://www.w3.org/TR/PNG-Rationale.html#R.Why-not-these-features>, Why
+not use format X?
+<https://www.w3.org/TR/PNG-Rationale.html#R.Why-not-use-format-X>.
+
+
+      Pronunciation
+
+PNG is pronounced "ping".
+------------------------------------------------------------------------
+Previous page <https://www.w3.org/TR/png.html>
+Next page <https://www.w3.org/TR/PNG-DataRep.html>
+Table of contents <https://www.w3.org/TR/png.html>
+------------------------------------------------------------------------
