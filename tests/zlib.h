@@ -95,6 +95,7 @@ static int stbiw__zlib_bitrev(int code, int codebits)
 
 static unsigned int stbiw__crc32(unsigned char *buffer, int len)
 {
+	// Reflected 0xEDB88320: &1 >> [128] = poly , [ 8] = poly >> 8 VALID
    static unsigned int crc_table[256] =
    {
       0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
