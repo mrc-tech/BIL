@@ -18,15 +18,7 @@ void writeBMP(std::string filename,int rows,int cols,int R[],int G[], int B[])
 {
 	// i valori R G B sono interi (da 0 a 255)
 	std::ofstream file(filename,std::ios::binary); //apre il file come binario
-	
 	int temp;
-	
-//	temp = 16;	
-//	file.write((char*)&temp,sizeof(short)); //scrive uno short (2 byte) [16 = 0x10]
-//	file.write((char*)&temp,1); //scrive un byte (se l'int è maggiore di 255 allora fa un mezzo casino perchè scrive due bytes)
-//	temp = 0xFF;
-//	file.write((char*)&temp,1);
-	
 	
 	//################################### FILE HEADER ###################################
 	//intestazione "BM":
@@ -63,7 +55,6 @@ void writeBMP(std::string filename,int rows,int cols,int R[],int G[], int B[])
 	
 	//################################### DATI ###################################
 	
-	
 	for(int r=rows-1;r>=0;r--){
 		for(int c=0;c<cols;c++){
 			temp = R[r*cols+c] % 256; file.write((char*)&temp,1); //scrive il contributo del rosso [1 byte]
@@ -74,16 +65,8 @@ void writeBMP(std::string filename,int rows,int cols,int R[],int G[], int B[])
 		if((3*cols)%4 != 0) for(int i=0;i<4-(3*cols)%4;i++){ //NON SO SE è GIUSTA LA MIA MODIFICA (ho bisogno di sapere quanto devo aggiungere per arrivare a 4, non il RESTO di quello che mi è rimasto....)
 			temp = 0;
 			file.write((char*)&temp,1);
-//			std::cout << "completa ";
 		}
-//		std::cout << std::endl;
 	}
-	
-//	
-//	cout << 27 % 4 << endl;
-//	cout << 27 / 4 << endl;
-//	cout << 27 / 4. << endl;
-	
 	
 	file.close();
 }
