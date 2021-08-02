@@ -17,7 +17,14 @@ int main()
 	img.line(40,50,60,50);
 	img.line(50,40,50,60);
 	
-	img.save_bmp("draw_test.bmp");
+	img.save_bmp("draw_test1.bmp");
+	
+	img.clear();
+	img.bezier(0,0,0,100, 100,100,100,0);
+	img.penColor(255,255,255); img.penWidth(1);
+	img.bezier(0,0,0,50, 100,100,100,50);
+	
+	img.save_bmp("draw_test2.bmp");
 	
 	return 0;
 }

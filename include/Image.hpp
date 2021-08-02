@@ -47,7 +47,7 @@ class Image
 		inline color get_pixel(const uint x, const uint y) const { return data[y*W + x]; }
 		
 		//setters:
-		inline void set_pixel(const uint x, const uint y, const color c) { data[y*W + x] = c; }
+		inline void set_pixel(const uint x, const uint y, const color c) { if( (x<0) || (y<0) || (x>=static_cast<int>(W)) || (y>=static_cast<int>(H)) ) return; data[y*W + x] = c; }
 		
 		//funcions:
 		inline bool operator ! () { return (data.size() == 0) || (W == 0) || (H == 0); } //check if there is some data
@@ -58,8 +58,9 @@ class Image
 		void line(int x0,int y0,int x1,int y1); //draw a line
 		void rect(int x0,int y0,int x1,int y1); //draw a rectangle
 		void circ(int centerx,int centery,int radius); //draw a circle
-		inline void penColor(const unsigned char& R,const unsigned char& G,const unsigned char& B) { _penColor = {R,G,B}; }
-		inline void penWidth(const unsigned int& width) { _penWidth = width; }
+		void bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX, int endPtY,int endControlX, int endControlY); //draw a Bezier curve
+		inline void penColor(const byte& R,const byte& G,const byte& B) { _penColor = {R,G,B}; }
+		inline void penWidth(const uint& width) { _penWidth = width; }
 		
 		//saveFile:
 		void save_bmp(const std::string&) const;
@@ -99,7 +100,6 @@ void Image::save_bmp(const std::string& fileName) const
 
 void Image::drawPoint(int x, int y)
 {
-	if( (x < 0) || (y < 0) || (x >= static_cast<int>(W)) || (y >= static_cast<int>(H)) ) return;
 	switch(_penWidth)
 	{
 		case 1: set_pixel(x,y, _penColor);
@@ -184,6 +184,30 @@ void Image::circ(int centerx, int centery, int radius)
 		
 		if((d + radius) > 0) d -= ((--radius) << 1) - 1;
 		if(x > d) d += ((++x) << 1) + 1;
+	}
+}
+
+
+void Image::bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX, int endPtY,int endControlX, int endControlY)
+{
+	// An implementation of a Bezier curve.
+	double cx = 3.0*(startControlX - startPtX);
+	double bx = 3.0*(endControlX - startControlX) - cx;
+	double ax = double(endPtX - startPtX - cx - bx);
+	
+	double cy = 3.0*(startControlY - startPtY);
+	double by = 3.0*(endControlY - startControlY) - cy;
+	double ay = double(endPtY - startPtY - cy - by);
+	
+	double x = startPtX;
+	double y = startPtY;
+	
+	for(double t = 0.0; t<=1.005; t += 0.005){
+		double const newx = startPtX + t*(double(cx) + t*(double(bx) + t*(double(ax))));
+		double const newy = startPtY + t*(double(cy) + t*(double(by) + t*(double(ay))));
+		this->line(int(x),int(y),int(newx),int(newy));
+		x = newx;
+		y = newy;
 	}
 }
 
