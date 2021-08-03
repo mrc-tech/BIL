@@ -128,10 +128,10 @@ void BasicImage::load_file(std::string fileName)
 
 inline std::size_t file_size(const std::string& file_name)
 {
-	std::ifstream file(file_name.c_str(),std::ios::in | std::ios::binary);
+	std::ifstream file(file_name.c_str(), std::ios::in | std::ios::binary);
 	if (!file) return 0;
-	file.seekg (0, std::ios::end);
-	return static_cast<std::size_t>(file.tellg());
+	file.seekg(0, std::ios::end);
+	return static_cast<std::size_t> (file.tellg());
 }
 
 
