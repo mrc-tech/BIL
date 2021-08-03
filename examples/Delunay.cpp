@@ -27,7 +27,7 @@ int main()
 	for(int y=0; y<img.height(); y++)
 		for(int x=0; x<img.width(); x++){
 			//calculate distances between current point (x,y) and points (X[i],Y[i])
-			vector<double> lengths; //vector of distances between all (X[i],Y[i]) points
+			vector<double> lengths; //vector of distances between (x,y) and all (X[i],Y[i]) points
 			for(int i=0; i<NPOINTS; i++){
 				lengths.push_back(sqrt((double)pow(x-X[i],2)+(double)pow(y-Y[i],2)));
 			}
