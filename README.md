@@ -1,6 +1,24 @@
 # Bitmap
 C++ library for images
 
+## Usage
+To use the class include the "`Image.hpp`" header file (inside the `include` folder, other header files in this folder are necessary):
+```c++
+#include "Image.hpp"          // include the Image class
+
+int main()
+{
+   Image img(800,600);        // create an 800x600 pixels image
+   img.clear();               // set all pixels to black
+   
+   img.save_bmp("image.bmp"); // save image as 24-bit Bitmap file
+   
+   return 0;
+}
+```
+For other, more complex, examples please see `examples` folder.
+
+
 ## ToDo
  - fare una classe "Figure" dove le coordinate sono double. La classe Image invece serve per le immagini raster.
  - inserire anche una classe per gestire le immagini `PNG`. Dato che pesano meno dei bmp e vengono lette senza problemi da LaTeX (al contrario dei bitmap). Se inserisco il modo di gestire altri formati questo repository invece di "**Bitmap**" dovrebbe chiamarsi "**Image**"
