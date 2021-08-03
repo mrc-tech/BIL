@@ -25,7 +25,7 @@ For other, more complex, examples please see `examples` folder.
  - fare l'esempio di _Perlin noise_ (studiare meglio come fare)
  - fare esempi di generazione parametrica di figure (come i triangoli inscritti l'uno all'altro con una leggera rotazione)
  - Se implemento i `PNG` e i `JPG` devo cambiare nome al repository in **Image**
- - Metodi per generare le figure geometriche fondamentali in `image` (mancano l'arco di cerchio, l'ellisse, le splines, i poligoni regolari, etc.)
+ - Metodi per generare le figure geometriche fondamentali in `image` (mancano l'arco di cerchio, l'ellisse, le splines, i poligoni regolari, quadrilateri [quad] etc.)
  - inserire un metodo per il `flood-fill` delle figure (studiare bene come fare)
  - Sarebbe interessante anche un modo per "vettorializzare" i dati delle immagini in ingresso. Ma questo è di sicuro più complesso e richiederebbe proprio un altro repository ed un altro progetto.
  - Fare in modo che si possano anche _leggere_ i file BMP, PNG e JPG (almeno nella loro più semplice accezione)
