@@ -58,6 +58,7 @@ class Image
 		void line(int x0,int y0,int x1,int y1); //draw a line
 		void rect(int x0,int y0,int x1,int y1); //draw a rectangle
 		void circ(int centerx,int centery,int radius); //draw a circle
+		void poly(std::vector<int> coords, bool closed); //draw a polyline
 		void bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX, int endPtY,int endControlX, int endControlY); //draw a Bezier curve
 		inline void penColor(const byte& R,const byte& G,const byte& B) { _penColor = {R,G,B}; }
 		inline void penWidth(const uint& width) { _penWidth = width; }
@@ -185,6 +186,14 @@ void Image::circ(int centerx, int centery, int radius)
 		if((d + radius) > 0) d -= ((--radius) << 1) - 1;
 		if(x > d) d += ((++x) << 1) + 1;
 	}
+}
+
+
+void Image::poly(std::vector<int> coords, bool closed = false)
+{
+	//draws a polyline stored in the coords vectror in the sequence (x0, y0, x1, y1, x2, y2, ... , xn, yn)
+	for(int i=3; i<coords.size(); i+=2) line(coords[i-3], coords[i-2], coords[i-1], coords[i]); //draw the polyline 
+	if(closed && (coords.size() > 3)) line(coords[0], coords[1], coords[coords.size()-2], coords[coords.size()-1]); //close the polyline
 }
 
 
