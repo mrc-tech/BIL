@@ -4,7 +4,7 @@
 #include "../include/Image.hpp"
 
 #define PI 3.14159265
-#define N_POLY 20 //number of recursive poly
+#define N_POLY 20 //number of recursive polygons
 
 using namespace std;
 
@@ -13,11 +13,11 @@ int main()
 {
 	Image img(800,800);
 	
-	int N = 4; //number of verticies
+	int N = 4; //number of verticies of polygon
 	double R = 400; //initial radius (polar coord)
 	double theta = 0; //initial angle (polar coord)
 	double delta_theta = PI/20; //updating angle
-	double phi = (double) 2*PI / N; //figure internal angle
+	double phi = (double) 2*PI / N; //figure internal angles between verticies (all equal: regular polygon)
 	
 	img.penColor(255,255,255);
 	vector<int> coord;
@@ -33,7 +33,7 @@ int main()
 		img.poly(coord, true);
 		//update polar coordinates:
 		theta += delta_theta;
-		R = R / (sin(delta_theta) + cos(delta_theta)); //this formula is true only for square (N=4)
+		R = R / (sin(delta_theta) + cos(delta_theta)); //this formula is true only for squares (N=4)
 	}
 	
 	img.save_bmp("recursive_square.bmp");
