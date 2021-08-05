@@ -30,3 +30,4 @@ For other, more complex, examples please see `examples` folder.
  - Sarebbe interessante anche un modo per "vettorializzare" i dati delle immagini in ingresso. Ma questo è di sicuro più complesso e richiederebbe proprio un altro repository ed un altro progetto.
  - Fare in modo che si possano anche _leggere_ i file BMP, PNG e JPG (almeno nella loro più semplice accezione)
  - Fare un esempio dell'*attrattore strano di Lorentz* e mettere anche le scritte con le formule e i rispettivi parametri usati
+ - fare in modo di poter scalare (anche di 2 e 0.5 soltanto) e di ruotare l'immagine (anche solo di +-90 gradi)
