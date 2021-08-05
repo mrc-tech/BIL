@@ -197,7 +197,7 @@ void Image::poly(std::vector<int> coords, bool closed = false)
 }
 
 
-void Image::bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX, int endPtY,int endControlX, int endControlY)
+void Image::bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX,int endPtY,int endControlX,int endControlY)
 {
 	// An implementation of a Bezier curve.
 	double cx = 3.0*(startControlX - startPtX);
