@@ -1,8 +1,8 @@
 /***************************************
 Image library
 
-Author: Andrea Marchi (diescc@gmail.com)
-2021
+Author:  Andrea Marchi (diescc@gmail.com)
+version: v0.2 (05/08/2021)
 ***************************************/
 #ifndef MRC_IMAGE_HPP
 #define MRC_IMAGE_HPP
