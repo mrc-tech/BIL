@@ -44,7 +44,7 @@ class Image
 		inline uint width()  const { return W; }
 		inline uint height() const { return H; }
 		inline uint size() const { return W*H; }
-		inline color get_pixel(const uint x, const uint y) const { return data[y*W + x]; }
+		inline color get_pixel(const uint x, const uint y) const { if( (x<0) || (y<0) || (x>=static_cast<int>(W)) || (y>=static_cast<int>(H)) ) return {0,0,0}; return data[y*W + x]; }
 		
 		//setters:
 		inline void set_pixel(const uint x, const uint y, const color c) { if( (x<0) || (y<0) || (x>=static_cast<int>(W)) || (y>=static_cast<int>(H)) ) return; data[y*W + x] = c; }
