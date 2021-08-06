@@ -12,7 +12,7 @@ version: v0.3 (06/08/2021)
 #include <vector>
 #include <string>
 
-#include "Bitmap.h"
+#include "imageFormats/Bitmap.h"
 
 typedef  unsigned int   uint;
 typedef  unsigned char  byte;
@@ -66,7 +66,10 @@ class Image
 		inline void penWidth(const uint& width) { _penWidth = width; }
 		
 		//saveFile:
-		void save_bmp(const std::string&) const;
+		void save_bmp(const std::string& fileName) const;
+		
+		//loadFile:
+		void load_bmp(const std::string& fileName);
 		
 		
 	private:
@@ -98,6 +101,28 @@ void Image::save_bmp(const std::string& fileName) const
 	
 	image.save_file(fileName);
 }
+
+
+
+
+void Image::load_bmp(const std::string& fileName)
+{
+	Bitmap image;
+	
+	image.load_file(fileName); // load Bitmap file
+	
+	//save Bitmap data to Image:
+	W = image.width();
+	H = image.height();
+	data.resize(W*H); // allocate memory
+	for(uint y=0; y<H; y++)
+		for(uint x=0; x<W; x++){
+			unsigned char R,G,B;
+			image.get_pixel(x,y, R,G,B);
+			this->set_pixel(x,y, {R,G,B});
+		}
+}
+
 
 
 
