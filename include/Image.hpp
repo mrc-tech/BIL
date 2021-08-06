@@ -118,7 +118,7 @@ void Image::load_bmp(const std::string& fileName)
 	for(uint y=0; y<H; y++)
 		for(uint x=0; x<W; x++){
 			unsigned char R,G,B;
-			image.get_pixel(x,y, R,G,B);
+			image.get_pixel(x,y,  R,G,B);
 			this->set_pixel(x,y, {R,G,B});
 		}
 }
