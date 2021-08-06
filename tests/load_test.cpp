@@ -15,6 +15,8 @@ int main()
 	
 	img.penColor(255,255,255);
 	img.line(img.width(),0, 0,img.height());
+	img.penWidth(2);
+	img.ellipse(img.width()/2, img.height()/2, img.width()/3, img.height()/2);
 	
 	img.save_bmp("draw_test2_modified.bmp");
 	

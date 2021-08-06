@@ -61,6 +61,7 @@ class Image
 		void poly(std::vector<int> coords, bool closed); //draw a polyline
 		void bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX, int endPtY,int endControlX, int endControlY); //draw a Bezier curve
 		void text(int x0,int y0, std::string text, std::vector<std::string> font);
+		void ellipse(int centerx, int centery, int a, int b);
 		
 		inline void penColor(const byte& R,const byte& G,const byte& B) { _penColor = {R,G,B}; }
 		inline void penWidth(const uint& width) { _penWidth = width; }
@@ -268,6 +269,76 @@ void Image::text(int x0,int y0, std::string text, std::vector<std::string> font)
 		x += charWidth;
 		y = y0;
 	}
+}
+
+
+void Image::ellipse(int centerx, int centery, int a, int b)
+{
+	int t1 = a * a;
+	int t2 = t1 << 1;
+	int t3 = t2 << 1;
+	int t4 = b * b;
+	int t5 = t4 << 1;
+	int t6 = t5 << 1;
+	int t7 = a * t5;
+	int t8 = t7 << 1;
+	int t9 = 0;
+	
+	int d1 = t2 - t7 + (t4 >> 1);
+	int d2 = (t1 >> 1) - t8 + t5;
+	int x  = a;
+	int y  = 0;
+	
+	int negative_tx = centerx - x;
+	int positive_tx = centerx + x;
+	int negative_ty = centery - y;
+	int positive_ty = centery + y;
+	
+	while(d2 < 0){
+		drawPoint(positive_tx, positive_ty);
+		drawPoint(positive_tx, negative_ty);
+		drawPoint(negative_tx, positive_ty);
+		drawPoint(negative_tx, negative_ty);
+		
+		y++;
+		t9 = t9 + t3;
+		
+		if(d1 < 0){
+			d1 = d1 + t9 + t2;
+			d2 = d2 + t9;
+		}else{
+			x--;
+			t8 = t8 - t6;
+			d1 = d1 + (t9 + t2 - t8);
+			d2 = d2 + (t9 + t5 - t8);
+			negative_tx = centerx - x;
+			positive_tx = centerx + x;
+		}
+		
+		negative_ty = centery - y;
+		positive_ty = centery + y;
+	}
+	
+	do{
+		drawPoint(positive_tx, positive_ty);
+		drawPoint(positive_tx, negative_ty);
+		drawPoint(negative_tx, positive_ty);
+		drawPoint(negative_tx, negative_ty);
+		
+		x--;
+		t8 = t8 - t6;
+		
+		if(d2 < 0){
+			y++;
+			t9 = t9 + t3;
+			d2 = d2 + (t9 + t5 - t8);
+			negative_ty = centery - y;
+			positive_ty = centery + y;
+		}else d2 = d2 + (t5 - t8);
+		
+		negative_tx = centerx - x;
+		positive_tx = centerx + x;
+	}while (x >= 0);
 }
 
 
