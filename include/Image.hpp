@@ -2,7 +2,7 @@
 Image library
 
 Author:  Andrea Marchi (diescc@gmail.com)
-version: v0.2 (06/08/2021)
+version: v0.3 (06/08/2021)
 ***************************************/
 #ifndef MRC_IMAGE_HPP
 #define MRC_IMAGE_HPP
