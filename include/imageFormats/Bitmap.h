@@ -235,9 +235,7 @@ void Bitmap::load_file(std::string fileName)
 	data.resize(_height * bytes_per_row); // allocate memory
 	
 	for(unsigned i=0; i<_height; i++){
-//		unsigned char* data_ptr = row(_height - i - 1); // read in inverted row order
 		unsigned char* data_ptr = &data[((_height-i-1) * bytes_per_row)]; // read in inverted row order
-//		(&data_[(row_index * bytes_per_row)]);
 		
 		stream.read(reinterpret_cast<char*>(data_ptr), sizeof(char) * bytes_per_row);
 		stream.read(padding_data, padding);
@@ -350,12 +348,6 @@ std::size_t Bitmap::file_size(const std::string& file_name) const
 	file.seekg (0, std::ios::end);
 	return static_cast<std::size_t>(file.tellg());
 }
-
-//void create_bitmap()
-//   {
-//      row_increment_ = width_ * bytes_per_pixel_;
-//      data_.resize(height_ * row_increment_);
-//   }
 
 
 
