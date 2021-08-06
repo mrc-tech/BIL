@@ -26,10 +26,10 @@ For other, more complex, examples please see `examples` folder.
  - fare l'esempio di _Perlin noise_ (studiare meglio come fare)
  - fare esempi di generazione parametrica di figure (come i triangoli inscritti l'uno all'altro con una leggera rotazione)
  - Se implemento i `PNG` e i `JPG` devo cambiare nome al repository in **Image**
- - Metodi per generare le figure geometriche fondamentali in `image` (mancano l'arco di cerchio, l'ellisse, le splines etc.)
+ - Metodi per generare le figure geometriche fondamentali in `image` (mancano l'arco di cerchio, le splines etc.)
  - inserire un metodo per il `flood-fill` delle figure (studiare bene come fare)
  - Sarebbe interessante anche un modo per "vettorializzare" i dati delle immagini in ingresso. Ma questo è di sicuro più complesso e richiederebbe proprio un altro repository ed un altro progetto.
- - Fare in modo che si possano anche _leggere_ i file BMP, PNG e JPG (almeno nella loro più semplice accezione)
+ - Fare in modo che si possano anche _leggere_ i file PNG e JPG (almeno nella loro più semplice accezione)
  - Fare un esempio dell'*attrattore strano di Lorentz* e mettere anche le scritte con le formule e i rispettivi parametri usati
  - fare in modo di poter scalare (anche di 2 e 0.5 soltanto) e di ruotare l'immagine (anche solo di +-90 gradi)
  - Chiamare questo progetto `CIL` (C++ Image Library)??
