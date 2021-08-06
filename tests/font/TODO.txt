@@ -1,5 +1,3 @@
-devo fare un programma che estrae i font dalle immagini in qualche modo. Farle a mano una per una e` veramente troppo...
-
 Devo implementare anche i font di console (quelli classici di windows 7)
 
 fare anche in modo che la routine di posizionamento del testo disegna anche il background se gli viene richiesto
