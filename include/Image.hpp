@@ -60,6 +60,8 @@ class Image
 		void circ(int centerx,int centery,int radius); //draw a circle
 		void poly(std::vector<int> coords, bool closed); //draw a polyline
 		void bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX, int endPtY,int endControlX, int endControlY); //draw a Bezier curve
+		void text(int x0,int y0, std::string text, std::vector<std::string> font);
+		
 		inline void penColor(const byte& R,const byte& G,const byte& B) { _penColor = {R,G,B}; }
 		inline void penWidth(const uint& width) { _penWidth = width; }
 		
@@ -222,6 +224,29 @@ void Image::bezier(int startPtX,int startPtY,int startControlX,int startControlY
 
 
 
+void Image::text(int x0,int y0, std::string text, std::vector<std::string> font)
+{
+	//prints ASCII chars from 32 (space) to 126 (tilde)
+	int charWidth  = font[0][0];
+	int charHeight = font[0][1];
+	int x=x0, y=y0; // top-right corner of first character
+	for(int i=0; i<text.length(); i++){
+		if(text[i] == '\n') {
+			//new line and carriage return
+			x = x0;
+			y0 += charHeight;
+			y = y0;
+			continue; //SOLUZIONE LEZZA E TEMPORANEA!! (per non far continuare con i cicli for)
+		}
+		if(text[i]<32 || text[i]>126) continue; //NON MI PIACE MOLTO USARE CONTINUE, MA FORSE E` L'UNICA SOLUZIONE
+		for(int r=0; r<charHeight; r++) for(int c=0; c<charWidth; c++) if(font[text[i]-' '+1][r*charWidth+c] == '1') set_pixel(x+c, y+r, _penColor);
+		x += charWidth;
+		y = y0;
+	}
+}
+
+
+
 
 
 
@@ -232,8 +257,9 @@ void Image::bezier(int startPtX,int startPtY,int startControlX,int startControlY
 
 #include "palette.hpp"
 
+// FONTS =================================================================================================================================
 
-
+#include "fonts/ZX_Spectrum_16x16.h"
 
 
 #endif
