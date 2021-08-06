@@ -1,3 +1,7 @@
+/************************************
+Prints all 7-bits US-ASCII characters
+there are 96 printable ASCII chars
+************************************/
 #include <string>
 
 #include "../include/Image.hpp"
