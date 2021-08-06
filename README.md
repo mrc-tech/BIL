@@ -9,7 +9,8 @@ To use the class include the "`Image.hpp`" header file (inside the `include` fol
 int main()
 {
    Image img(800,600);        // create an 800x600 pixels image
-   img.clear();               // set all pixels to black
+   img.clear(255,255,255);    // set all pixels to white
+   img.line(0,0,800,800);     // draw a diagonal line on the image
    
    img.save_bmp("image.bmp"); // save image as 24-bit Bitmap file
    
