@@ -32,4 +32,4 @@ For other, more complex, examples please see `examples` folder.
  - Fare in modo che si possano anche _leggere_ i file BMP, PNG e JPG (almeno nella loro più semplice accezione)
  - Fare un esempio dell'*attrattore strano di Lorentz* e mettere anche le scritte con le formule e i rispettivi parametri usati
  - fare in modo di poter scalare (anche di 2 e 0.5 soltanto) e di ruotare l'immagine (anche solo di +-90 gradi)
- - Chiamare questo progetto CIL (C++ Image Library)??
+ - Chiamare questo progetto `CIL` (C++ Image Library)??
