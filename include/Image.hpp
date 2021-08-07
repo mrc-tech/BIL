@@ -265,7 +265,7 @@ void Image::text(int x0,int y0, std::string text, std::vector<std::string> font)
 			continue; //SOLUZIONE LEZZA E TEMPORANEA!! (per non far continuare con i cicli for)
 		}
 		if(text[i]<32 || text[i]>126) continue; //NON MI PIACE MOLTO USARE CONTINUE, MA FORSE E` L'UNICA SOLUZIONE
-		for(int r=0; r<charHeight; r++) for(int c=0; c<charWidth; c++) if(font[text[i]-' '+1][r*charWidth+c] == '1') set_pixel(x+c, y+r, _penColor);
+		for(int r=0; r<charHeight; r++) for(int c=0; c<charWidth; c++) if(font[text[i]-' '+1][r*charWidth+c] == '0') set_pixel(x+c, y+r, _penColor);
 		x += charWidth;
 		y = y0;
 	}
@@ -356,6 +356,7 @@ void Image::ellipse(int centerx, int centery, int a, int b)
 // FONTS =================================================================================================================================
 
 #include "fonts/ZX_Spectrum_16x16.h"
+#include "fonts/IBM_EGA_8x14.h"
 
 
 #endif
