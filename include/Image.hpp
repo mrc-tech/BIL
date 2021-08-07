@@ -357,6 +357,7 @@ void Image::ellipse(int centerx, int centery, int a, int b)
 
 #include "fonts/ZX_Spectrum_16x16.h"
 #include "fonts/IBM_EGA_8x14.h"
+#include "fonts/Portfolio_6x8.h"
 
 
 #endif

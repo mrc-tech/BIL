@@ -13,7 +13,8 @@ there are 96 printable ASCII chars
 int main()
 {
 //	std::vector<std::string> font = ZX_Spectrum_16x16;
-	std::vector<std::string> font = IBM_EGA_8x14;
+//	std::vector<std::string> font = IBM_EGA_8x14;
+	std::vector<std::string> font = Portfolio_6x8;
 	
 	int cW = font[0][0]; // font width
 	int cH = font[0][1]; // font height

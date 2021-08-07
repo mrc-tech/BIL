@@ -41,12 +41,16 @@ int main()
 	img.poly(coords);
 	
 	//writes system info:
+	img.penColor(150,150,150);
 	img.text(0,0, "dx/dt = a*(y-x) \ndy/dt = x*(b-x)-y \ndz/dt = x*y-c*z \n\n", IBM_EGA_8x14);
 	char buf[256];
 	sprintf(buf,"a=%.1f, b=%.1f, c=%.1f",a,b,c);
 	img.text(0,14*4, buf, IBM_EGA_8x14);
 	sprintf(buf,"initial state: (1, 0, 0)");
 	img.text(0,14*5, buf, IBM_EGA_8x14);
+	
+	img.penColor(80,80,80);
+	img.text(1,img.height()-8-1, "Copyright (c) 2021 Marchi Technology", Portfolio_6x8);
 	
 	img.save_bmp("Lorentz_system.bmp");
 	
