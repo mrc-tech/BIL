@@ -42,7 +42,7 @@ int main()
 	
 	//writes system info:
 	img.penColor(150,150,150);
-	img.text(0,0, "dx/dt = a*(y-x) \ndy/dt = x*(b-x)-y \ndz/dt = x*y-c*z \n\n", IBM_EGA_8x14);
+	img.text(0,0, "dx/dt = a*(y-x) \ndy/dt = x*(b-z)-y \ndz/dt = x*y-c*z \n\n", IBM_EGA_8x14);
 	char buf[256];
 	sprintf(buf,"a=%.1f, b=%.1f, c=%.1f",a,b,c);
 	img.text(0,14*4, buf, IBM_EGA_8x14);
