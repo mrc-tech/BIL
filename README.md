@@ -21,6 +21,8 @@ For other, more complex, examples please see `examples` folder.
 
 
 ## ToDo
+For the moment this _todo list_ is written in italian. As far as the first contributor comes I'll translate in English.
+
  - fare una classe "Figure" dove le coordinate sono double. La classe Image invece serve per le immagini raster. (non credo ce ne sia bisogno veramente...)
  - inserire anche una classe per gestire le immagini `PNG`. Dato che pesano meno dei bmp e vengono lette senza problemi da LaTeX (al contrario dei bitmap). Se inserisco il modo di gestire altri formati questo repository invece di "**Bitmap**" dovrebbe chiamarsi "**Image**"
  - fare l'esempio di _Perlin noise_ (studiare meglio come fare)
