@@ -3,3 +3,9 @@ Devo implementare anche i font di console (quelli classici di windows 7). Sicura
 fare anche in modo che la routine di posizionamento del testo disegna anche il background se gli viene richiesto
 
 Fare un readme in markdown con le immagini dei vari font? (forse non mi va di uscire troppo dal seminato per quanto riguarda file di documentazione...)
+
+fare in modo che si puo` anche scalare x2 (o sempre in potenze di due) i font da scrivere nella funzione "text". In maniera tale da scrivere anche con font maggiorati.
+Sarebbe bello anche avere una procedura che restituisce il "bounding box" del testo che va a scrivere
+
+
+
