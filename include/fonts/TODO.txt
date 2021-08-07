@@ -1,3 +1,5 @@
-Devo implementare anche i font di console (quelli classici di windows 7)
+Devo implementare anche i font di console (quelli classici di windows 7). Sicuramente mi verra voglia di implementare altri font...
 
 fare anche in modo che la routine di posizionamento del testo disegna anche il background se gli viene richiesto
+
+Fare un readme in markdown con le immagini dei vari font? (forse non mi va di uscire troppo dal seminato per quanto riguarda file di documentazione...)
