@@ -2,7 +2,7 @@
 Image library
 
 Author:  Andrea Marchi (diescc@gmail.com)
-version: v0.3 (06/08/2021)
+version: v0.3 (08/08/2021)
 ***************************************/
 #ifndef MRC_IMAGE_HPP
 #define MRC_IMAGE_HPP
@@ -38,7 +38,8 @@ class Image
 	public:
 		Image() : W(0), H(0) { _penWidth = 1; _penColor = {0,0,0}; }
 		Image(const uint width, const uint height) : W(width), H(height) { data.resize(W*H); _penWidth = 1; _penColor = {0,0,0}; }
-		Image(const Image& image) : W(image.W), H(image.H) { data.resize(W*H); _penWidth = 1; _penColor = {0,0,0}; }
+		Image(const Image& image) : W(image.W), H(image.H) { data.resize(W*H); data = image.data; _penWidth = image._penWidth; _penColor = image._penColor; }
+		Image(std::string fileName) { load_bmp(fileName); } // IN REALTA` DIPENDE DAL FILE! DEVO FARE UNA ROUTINE CHE IN BASE ALL'ESTENSIONE CARICA UN FOTMATO PIUTTOSTO CHE UN ATRO
 		
 		//getters:
 		inline uint width()  const { return W; }
