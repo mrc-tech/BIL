@@ -20,6 +20,9 @@ int main()
 For other, more complex, examples please see `examples` folder.
 
 ## Screenshots
+
+![Mandelbrot_set](https://user-images.githubusercontent.com/74192712/128616712-8b2ed28f-9759-49a6-aa8d-c4bdda74c2e5.png)
+
 ![Lorentz_system](https://user-images.githubusercontent.com/74192712/128616684-a4f9e877-573b-46f6-ad36-f704f2cc23a7.png)
 
 
