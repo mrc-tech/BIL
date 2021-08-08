@@ -19,6 +19,10 @@ int main()
 ```
 For other, more complex, examples please see `examples` folder.
 
+## Screenshots
+![Lorentz_system](https://user-images.githubusercontent.com/74192712/128616684-a4f9e877-573b-46f6-ad36-f704f2cc23a7.png)
+
+
 
 ## ToDo
 For the moment this _todo list_ is written in italian. As far as the first contributor comes I'll translate in English.
