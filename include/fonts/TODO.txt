@@ -8,4 +8,3 @@ fare in modo che si puo` anche scalare x2 (o sempre in potenze di due) i font da
 Sarebbe bello anche avere una procedura che restituisce il "bounding box" del testo che va a scrivere
 
 
-
