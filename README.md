@@ -19,7 +19,7 @@ int main()
 ```
 For other, more complex, examples please see `examples` folder.
 
-## Screenshots
+## Images
 
 ![Mandelbrot_set](https://user-images.githubusercontent.com/74192712/128616712-8b2ed28f-9759-49a6-aa8d-c4bdda74c2e5.png)
 
