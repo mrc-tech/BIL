@@ -39,5 +39,6 @@ For the moment this _todo list_ is written in italian. As far as the first contr
  - Sarebbe interessante anche un modo per "vettorializzare" i dati delle immagini in ingresso. Ma questo è di sicuro più complesso e richiederebbe proprio un altro repository ed un altro progetto.
  - Fare in modo che si possano anche _leggere_ i file PNG e JPG (almeno nella loro più semplice accezione)
  - fare in modo di poter scalare (anche di 2 e 0.5 soltanto) e di ruotare l'immagine (anche solo di +-90 gradi)
- - Chiamare questo progetto `CIL` (C++ Image Library)??
+ - Chiamare questo progetto `SIL` (Simple Image Library)??
  - Forse dovrei mettere delle immagini (tra le top 3 piu belle e rappresentative tra gli esempi) qua nel README.md principale, nella categoria "Examples". In maniera tale che chi visita il mio repo vede in anteprima cosa puo fare con la mia libreria... (forse dovrei aspettare di avere un modo di esportare le immagini in formato `png`, in maniera tale da non appesantire il sito)
+ - Fare una routine di *Anti Aliasing* sull'immagine
