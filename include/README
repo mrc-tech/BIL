@@ -1,5 +1,12 @@
-Main files:
- - Image.hpp   : main file that implements the Image class
+## FILES ##
 
-Other files:
+ - Image.hpp   : main file that implements the Image class
  - writeBMP    : Deprecated funcions (kept for nostalgia only)
+
+
+## FOLDERS ##
+
+ - Fonts       : Bitmap font data
+ - Palettes    : Palette colors data
+ - ImageFormat : Image files format
+ - Utils       : Utility functions
