@@ -6,7 +6,7 @@
 
 ## FOLDERS ##
 
- - Fonts       : Bitmap font data
- - Palettes    : Palette colors data
- - ImageFormat : Image files format
- - Utils       : Utility functions
+ - fonts       : Bitmap font data
+ - palettes    : Palette colors data
+ - imageFormat : Image files format
+ - utils       : Utility functions
