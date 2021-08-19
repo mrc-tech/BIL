@@ -4,7 +4,7 @@ C++ library for images
 ## Design objectives
  - All classes and functions in header files (no precompiled library or external dependencies)
  - Easy to use
- - Works on Windows, Linux and Mac (C++11 standard)
+ - Works on Windows and Linux (C++11 standard)
  - The code can be understanded easly
  - Unlicensed (anyone can use and modify it as wanted)
 
