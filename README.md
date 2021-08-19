@@ -1,6 +1,12 @@
 # Bitmap
 C++ library for images
 
+## Design objectives
+ - All classes and functions in header files (no precompilare library or extrrnal dependencies)
+ - Easy to use
+ - Works on Windows, Linux and Mac (C++11 standard)
+ - The code can be understanded easly
+
 ## Usage
 To use the class include the "`Image.hpp`" header file (inside the `include` folder, other header files in this folder are necessary):
 ```c++
