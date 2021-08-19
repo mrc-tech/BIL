@@ -6,6 +6,7 @@ C++ library for images
  - Easy to use
  - Works on Windows, Linux and Mac (C++11 standard)
  - The code can be understanded easly
+ - Unlicensed (anyone can use and modify it as wanted)
 
 ## Usage
 To use the class include the "`Image.hpp`" header file (inside the `include` folder, other header files in this folder are necessary):
