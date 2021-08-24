@@ -390,6 +390,7 @@ void Image::resize(int width,int height)
 #include "fonts/Portfolio_6x8.h"
 #include "fonts/Morse_font.h"
 #include "fonts/ISO_font.h"
+#include "fonts/PS2THIN4.h"
 
 
 #endif
