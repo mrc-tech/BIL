@@ -49,3 +49,4 @@ For the moment this _todo list_ is written in italian. As far as the first contr
  - Chiamare questo progetto `SIL` (Simple Image Library)??
  - Forse dovrei mettere delle immagini (tra le top 3 piu belle e rappresentative tra gli esempi) qua nel README.md principale, nella categoria "Examples". In maniera tale che chi visita il mio repo vede in anteprima cosa puo fare con la mia libreria... (forse dovrei aspettare di avere un modo di esportare le immagini in formato `png`, in maniera tale da non appesantire il sito)
  - Fare una routine di *Anti Aliasing* sull'immagine
+ - Fare un programma ulteriore (proprio un altro progetto) che trasforma la serie di immagini in un video...
