@@ -2,7 +2,7 @@
 Simple Image Library (SIL)
 
 Author:  Andrea Marchi (diescc@gmail.com)
-version: v0.3 (19/08/2021)
+version: v0.3 (24/08/2021)
 ****************************************/
 #ifndef MRC_IMAGE_HPP
 #define MRC_IMAGE_HPP
@@ -389,6 +389,7 @@ void Image::resize(int width,int height)
 #include "fonts/IBM_EGA_8x14.h"
 #include "fonts/Portfolio_6x8.h"
 #include "fonts/Morse_font.h"
+#include "fonts/ISO_font.h"
 
 
 #endif
