@@ -1,9 +1,9 @@
-/***************************************
-Image library
+/****************************************
+Simple Image Library (SIL)
 
 Author:  Andrea Marchi (diescc@gmail.com)
-version: v0.3 (08/08/2021)
-***************************************/
+version: v0.3 (19/08/2021)
+****************************************/
 #ifndef MRC_IMAGE_HPP
 #define MRC_IMAGE_HPP
 
@@ -37,7 +37,7 @@ class Image
 		
 	public:
 		Image() : W(0), H(0) { _penWidth = 1; _penColor = {0,0,0}; }
-		Image(const uint width, const uint height) : W(width), H(height) { data.resize(W*H); _penWidth = 1; _penColor = {0,0,0}; }
+		Image(const uint width, const uint height) : W(width), H(height) { data.resize(W*H); clear(); _penWidth = 1; _penColor = {0,0,0}; }
 		Image(const Image& image) : W(image.W), H(image.H) { data.resize(W*H); data = image.data; _penWidth = image._penWidth; _penColor = image._penColor; }
 		Image(std::string fileName) { load_bmp(fileName); } // IN REALTA` DIPENDE DAL FILE! DEVO FARE UNA ROUTINE CHE IN BASE ALL'ESTENSIONE CARICA UN FOTMATO PIUTTOSTO CHE UN ATRO
 		
@@ -53,6 +53,7 @@ class Image
 		//funcions:
 		inline bool operator ! () { return (data.size() == 0) || (W == 0) || (H == 0); } //check if there is some data
 		inline void clear(const color value = {0x00,0x00,0x00}) { std::fill(data.begin(), data.end(), value); } //clear the image with byte v
+		void resize(int width,int height);
 		
 		//drawers:
 		void drawPoint(int x,int y); //draw a point with internal penWidth and penColor
@@ -63,6 +64,7 @@ class Image
 		void bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX, int endPtY,int endControlX, int endControlY); //draw a Bezier curve
 		void text(int x0,int y0, std::string text, std::vector<std::string> font);
 		void ellipse(int centerx, int centery, int a, int b);
+		void insertImage(int x,int y, Image img);
 		
 		inline void penColor(const byte& R,const byte& G,const byte& B) { _penColor = {R,G,B}; }
 		inline void penWidth(const uint& width) { _penWidth = width; }
@@ -76,16 +78,16 @@ class Image
 		
 	private:
 		//auxiliary funcions:
-		inline bool big_endian() const { uint v = 0x01; return (1 != reinterpret_cast<char*>(&v)[0]); }
-		template<typename T> inline void read_from_stream(std::ifstream& stream,T& t) { stream.read(reinterpret_cast<char*>(&t),sizeof(T)); }
-		template<typename T> inline void write_to_stream(std::ofstream& stream,const T& t) const { stream.write(reinterpret_cast<const char*>(&t),sizeof(T)); }
+//		inline bool big_endian() const { uint v = 0x01; return (1 != reinterpret_cast<char*>(&v)[0]); }
+//		template<typename T> inline void read_from_stream(std::ifstream& stream,T& t) { stream.read(reinterpret_cast<char*>(&t),sizeof(T)); }
+//		template<typename T> inline void write_to_stream(std::ofstream& stream,const T& t) const { stream.write(reinterpret_cast<const char*>(&t),sizeof(T)); }
 		
 		
 		
 };
 
 
-typedef Image::color color;
+typedef Image::color color; // makes "color" a global type
 
 // =================================================================================================================================
 
@@ -240,7 +242,7 @@ void Image::bezier(int startPtX,int startPtY,int startControlX,int startControlY
 	double x = startPtX;
 	double y = startPtY;
 	
-	for(double t = 0.0; t<=1.005; t += 0.005){
+	for(double t=0.0; t<=1.005; t+=0.005){
 		double const newx = startPtX + t*(double(cx) + t*(double(bx) + t*(double(ax))));
 		double const newy = startPtY + t*(double(cy) + t*(double(by) + t*(double(ay))));
 		this->line(int(x),int(y),int(newx),int(newy));
@@ -339,7 +341,30 @@ void Image::ellipse(int centerx, int centery, int a, int b)
 		
 		negative_tx = centerx - x;
 		positive_tx = centerx + x;
-	}while (x >= 0);
+	}while(x >= 0);
+}
+
+
+void Image::insertImage(int x,int y, Image img)
+{
+	// insert the "img" Image into the current image at position (x,y)
+	for(int r=0; r<img.height(); r++)
+		for(int c=0; c<img.width(); c++)
+			set_pixel(x+c,y+r, img.get_pixel(c,r));
+}
+
+
+void Image::resize(int width,int height)
+{
+	// resize the image preserving the data
+	Image img = *this; // copy the image
+	
+	W = width; // save the new width
+	H = height; // save the new height
+	data.resize(W*H); // resize the data array
+	clear(); // clear the image
+	
+	insertImage(0,0, img); // insert the old image at position (0,0)
 }
 
 
@@ -347,8 +372,12 @@ void Image::ellipse(int centerx, int centery, int a, int b)
 
 
 
+// EXTERNAL FUNCTIONS =================================================================================================================================
 
-
+#include "imageFunctions/upSample.h"
+//#include "imageFunctions/downSample.h"
+//#include "imageFunctions/AntiAliasing.h"
+//#include "imageFunctions/blur.h"
 
 // PALETTE =================================================================================================================================
 
@@ -359,6 +388,15 @@ void Image::ellipse(int centerx, int centery, int a, int b)
 #include "fonts/ZX_Spectrum_16x16.h"
 #include "fonts/IBM_EGA_8x14.h"
 #include "fonts/Portfolio_6x8.h"
+#include "fonts/Morse_font.h"
 
 
 #endif
+
+/*****************************************************
+funzioni che potrei aggiungere:
+ - path : come i path degli SVG, stesso formato.
+ - fill : flood_fill da un punto dato un colore, e veder da solo i margini
+ - dash : disegna una linea tratteggiata con pattern definibili da una stringa
+ 
+*****************************************************/
