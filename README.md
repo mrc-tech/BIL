@@ -24,7 +24,7 @@ int main()
    return 0;
 }
 ```
-It can be used also the single header-file `Image.h` which includes all the separated nested header files. This file is generated through the automated `header-merger` developed by me (github.com/mrc-tech/header-merger).
+It can be used also the single header-file `Image.h` which includes all the separated nested header files. This file is generated through the automated [`header-merger`](https://github.com/mrc-tech/header-merger) developed by me.
 
 For other, more complex, examples please see `examples` folder.
 
