@@ -2,7 +2,7 @@
 Simple Image Library (SIL)
 
 Author:  Andrea Marchi (diescc@gmail.com)
-version: v0.3 (24/08/2021)
+version: v0.4 (28/08/2021)
 ****************************************/
 #ifndef MRC_IMAGE_HPP
 #define MRC_IMAGE_HPP
