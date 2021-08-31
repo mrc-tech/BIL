@@ -38,3 +38,10 @@ ________________________________________________________________________________
 Fare un programma che (data la stringa che si vuole inserire) genera il QR-code corrispondente
 ______________________________________________________________________________________
 
+Fare un programma che usa il "Perlin noise" e il "flood-fill" per generare delle mappe colorate generate randomicamente
+______________________________________________________________________________________
+
+Fare un "Random Walker" come esposto in https://it.khanacademy.org/computing/computer-programming/programming-natural-simulations/programming-noise/a/perlin-noise con il "Perlin noise".
+Farlo che genera un video sarebbe ancora piu` figo....
+______________________________________________________________________________________
+
