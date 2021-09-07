@@ -2,7 +2,7 @@
 
 C++ library for images
 
-This is a simple library mainly designed for image creation, but it can also read simple format images. With this tool you can create an image using several drawing function to draw
+This is a simple library mainly designed for image creation, but it can also read simple format images. With this tool you can create an image using several drawing function to draw:
  - set pixel color (with many palettes)
  - simple geometries (like lines, circles, bezier curves and more)
  - text in bitmap fonts
