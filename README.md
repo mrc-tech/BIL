@@ -6,6 +6,7 @@ This is a simple library mainly designed for image creation, but it can also rea
  - set pixel color (with many palettes)
  - simple geometries (like lines, circles, bezier curves and more)
  - text in bitmap fonts
+
 There are also some utility functions for upscaling the image and more.
 For the moment the library can only write (and read) bitmap image formats, but the author is working to the png file format implementation. For write and read the images in the png format. When the library will be able to write a png image file the project will be renamed in `Simple Image Library (SIL)` and will be relased the first version, the `v1.0`.
 The author is very busy with academic obligation so updates in this projct are not so often...
