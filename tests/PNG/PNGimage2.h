@@ -54,9 +54,9 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	unsigned char sig[8] = { 0x89,'P','N','G',0x0D,0x0A,0x1A,0x0A }; // header starting combination (8-byte signature)
 	write_to_stream(file, sig);
 	
-	// 2) data "chunks":
+	// 2) "CHUNKS":
 	
-	// 2.1) Image Header chunk (13 data bytes total):
+	// 2.1) Image Header "IHDR" chunk (13 data bytes total):
 	std::vector<unsigned char> temp;
 	temp.push_back((_width &0xFF000000)>>24); temp.push_back((_width &0x00FF0000)>>16); temp.push_back((_width &0x0000FF00)>>8); temp.push_back((_width &0x000000FF)); //image Width  (Big-Endian)
 	temp.push_back((_height&0xFF000000)>>24); temp.push_back((_height&0x00FF0000)>>16); temp.push_back((_height&0x0000FF00)>>8); temp.push_back((_height&0x000000FF)); //image Height (Big-Endian)
@@ -68,7 +68,7 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	
 	write_chunk(file, temp, "IHDR");
 	
-	// 2.2) Data chunks:
+	// 2.2) Data "IDAT" chunk:
 	temp.clear();
 	write_chunk(file, {0x08, 0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x03, 0x01, 0x01, 0x00}, "IDAT"); //hardcoded red single pixel
 	
@@ -367,6 +367,68 @@ Color Type and Allowed Bit Depth:
    4       8,16        Each pixel is a grayscale sample, followed by an alpha sample.
    6       8,16        Each pixel is an R,G,B triple, followed by an alpha sample.
 ******************************************************************************************/
+
+/******************************************************************************************
+Critical chunks:
+    IHDR	must be the first chunk; it contains (in this order) the image's width (4 bytes);
+			height (4 bytes); bit depth (1 byte, values 1, 2, 4, 8, or 16); 
+			color type (1 byte, values 0, 2, 3, 4, or 6); compression method (1 byte, value 0); 
+			filter method (1 byte, value 0); 
+			and interlace method (1 byte, values 0 "no interlace" or 1 "Adam7 interlace") 
+			(13 data bytes total).
+    PLTE	contains the palette: a list of colors. The PLTE chunk is essential for color 
+			type 3 (indexed color). It is optional for color types 2 and 6 (truecolor and 
+			truecolor with alpha) and it must not appear for color types 0 and 4 (grayscale 
+			and grayscale with alpha).
+    IDAT	contains the image, which may be split among multiple IDAT chunks. Such splitting 
+			increases filesize slightly, but makes it possible to generate a PNG in a streaming 
+			manner. The IDAT chunk contains the actual image data, which is the output stream 
+			of the compression algorithm.
+    IEND	marks the image end; the data field of the IEND chunk has 0 bytes/is empty.
+
+Ancillary chunks:
+    bKGD	gives the default background color. It is intended for use when there is no better 
+			choice available, such as in standalone image viewers (but not web browsers; see 
+			below for more details).
+    cHRM 	gives the chromaticity coordinates of the display primaries and white point.
+    dSIG 	is for storing digital signatures.
+    eXIf 	stores Exif metadata.
+    gAMA 	specifies gamma. The gAMA chunk contains only 4 bytes, and its value represents 
+			the gamma value multiplied by 100,000; for example, 
+			the gamma value 1/3.4 calculates to 29411.7647059 ((1/3.4)*(100,000)) and is 
+			converted to an integer (29412) for storage.
+    hIST 	can store the histogram, or total amount of each color in the image.
+    iCCP 	is an ICC color profile.
+    iTXt 	contains a keyword and UTF-8 text, with encodings for possible compression and 
+			translations marked with language tag. The Extensible Metadata Platform (XMP) uses 
+			this chunk with a keyword 'XML:com.adobe.xmp'
+    pHYs 	holds the intended pixel size (or pixel aspect ratio); the pHYs contains "Pixels 
+			per unit, X axis" (4 bytes), "Pixels per unit, Y axis" (4 bytes), and "Unit specifier" 
+			(1 byte) for a total of 9 bytes.[22]
+    sBIT 	(significant bits) indicates the color-accuracy of the source data; this chunk 
+			contains a total of between 1 and 13 bytes.
+    sPLT 	suggests a palette to use if the full range of colors is unavailable.
+    sRGB 	indicates that the standard sRGB color space is used; the sRGB chunk contains 
+			only 1 byte, which is used for "rendering intent" (4 values—0, 1, 2, and 3—are 
+			defined for rendering intent).
+    sTER 	stereo-image indicator chunk for stereoscopic images.
+    tEXt 	can store text that can be represented in ISO/IEC 8859-1, with one key-value pair 
+			for each chunk. The "key" must be between 1 and 79 characters long. Separator 
+			is a null character. The "value" can be any length, including zero up to the maximum 
+			permissible chunk size minus the length of the keyword and separator. Neither "key" nor 
+			"value" can contain null character. Leading or trailing spaces are also disallowed.
+    tIME 	stores the time that the image was last changed.
+    tRNS 	contains transparency information. For indexed images, it stores alpha channel values 
+			for one or more palette entries. For truecolor and grayscale images, it stores a single 
+			pixel value that is to be regarded as fully transparent.
+    zTXt 	contains compressed text (and a compression method marker) with the same limits as tEXt.
+
+The lowercase first letter in these chunks indicates that they are not needed for the PNG specification. 
+The lowercase last letter in some chunks indicates that they are safe to copy, even if the application 
+concerned does not understand them. 
+
+****************************************************************************************************/
+
 
 
 #endif
