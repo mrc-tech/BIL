@@ -12,10 +12,12 @@ ToDo:
 
 #include "BasicImage.h"
 #include "zlib.h"
+#include "zlib-1.2.11/zlib.h"
+//#include "zlib/zlib.h"
 
 #include <iostream> //TEMPORANEO, PER IL DEBUG
 
-
+#define CHUNK 32768 // 32 Kb
 
 class PNGimage : public BasicImage
 {
@@ -31,6 +33,7 @@ class PNGimage : public BasicImage
 		//auxiliary functions:
 		void write_chunk(std::ofstream& stream, std::vector<unsigned char> data, std::string type);
 		unsigned int crc32(unsigned char *buffer, int len);
+		std::vector<unsigned char> bigEndian_vec(int32_t x);
 		
 		void encode_png_line(int y, int stride_bytes, int filter_type, signed char *line_buffer);
 };
@@ -58,8 +61,11 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	
 	// 2.1) Image Header "IHDR" chunk (13 data bytes total):
 	std::vector<unsigned char> temp;
-	temp.push_back((_width &0xFF000000)>>24); temp.push_back((_width &0x00FF0000)>>16); temp.push_back((_width &0x0000FF00)>>8); temp.push_back((_width &0x000000FF)); //image Width  (Big-Endian)
-	temp.push_back((_height&0xFF000000)>>24); temp.push_back((_height&0x00FF0000)>>16); temp.push_back((_height&0x0000FF00)>>8); temp.push_back((_height&0x000000FF)); //image Height (Big-Endian)
+//	temp.push_back((_width &0xFF000000)>>24); temp.push_back((_width &0x00FF0000)>>16); temp.push_back((_width &0x0000FF00)>>8); temp.push_back((_width &0x000000FF)); //image Width  (Big-Endian)
+//	temp.push_back((_height&0xFF000000)>>24); temp.push_back((_height&0x00FF0000)>>16); temp.push_back((_height&0x0000FF00)>>8); temp.push_back((_height&0x000000FF)); //image Height (Big-Endian)
+//	temp.push_back(bigEndian_vec(_width)); NON FUNZIONA
+	auto x = bigEndian_vec(_width);  temp.insert(temp.end(), x.begin(), x.end());
+	     x = bigEndian_vec(_height); temp.insert(temp.end(), x.begin(), x.end());
 	temp.push_back(8); // bit depth (1 byte, values 1, 2, 4, 8, or 16)
 	temp.push_back(2); // color type (1 byte, values 0:grayscale, 2:RGB, 3:indexed(palette), 4:grayscale&alpha, or 6:RGBA)
 	temp.push_back(0); // compression method (1 byte, value 0)
@@ -70,8 +76,125 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	
 	// 2.2) Data "IDAT" chunk:
 	temp.clear();
-	write_chunk(file, {0x08, 0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x03, 0x01, 0x01, 0x00}, "IDAT"); //hardcoded red single pixel
+//	write_chunk(file, {0x08, 0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x03, 0x01, 0x01, 0x00}, "IDAT"); //hardcoded red single pixel
+	/*
+	{0x08,     0xD7,     0x63,     0xF8,     0xCF,     0xC0,     0x00,     0x00,     0x03,     0x01,     0x01,     0x00    }
+	{00001000, 11010111, 01100011, 11111000, 11001111, 11000000, 00000000, 00000000, 00000011, 00000001, 00000001, 00000000}
+	*/
 	
+	//#################################################################################################################################################
+	
+//	char a[50] = "Hello Hello Hello Hello Hello Hello!";
+//	char b[50];
+//	// zlib struct
+//	z_stream defstream;
+//	defstream.zalloc = Z_NULL;
+//	defstream.zfree = Z_NULL;
+//	defstream.opaque = Z_NULL;
+//	// setup "a" as the input and "b" as the compressed output
+//	defstream.avail_in = (uInt)strlen(a)+1; // size of input, string + terminator
+//	defstream.next_in = (Bytef *)a; // input char array
+// 	defstream.avail_out = (uInt)sizeof(b); // size of output
+// 	defstream.next_out = (Bytef *)b; // output char array
+//	
+//    // the actual compression work.
+//    deflateInit(&defstream, Z_BEST_COMPRESSION);
+//    deflate(&defstream, Z_FINISH);
+//    deflateEnd(&defstream);
+//    // This is one way of getting the size of the output
+//    printf("Compressed size is: %lu\n", strlen(b));
+//    printf("Compressed string is: %s\n", b);
+
+	// inflate c into d
+	unsigned char c[] = {0x08, 0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x03, 0x01, 0x01, 0x00};
+	char d[10000];
+	// zlib struct
+    z_stream infstream;
+    infstream.zalloc = Z_NULL;
+    infstream.zfree = Z_NULL;
+    infstream.opaque = Z_NULL;
+    // setup "c" as the input and "d" as the compressed output
+    infstream.avail_in = (uInt)12; // size of input
+    infstream.next_in = (Bytef *)c; // input char array
+    infstream.avail_out = (uInt)sizeof(d); // size of output
+    infstream.next_out = (Bytef *)d; // output char array
+     
+    // the actual DE-compression work.
+    inflateInit(&infstream);
+    inflate(&infstream, Z_NO_FLUSH);
+    inflateEnd(&infstream);
+     
+    printf("Uncompressed size is: %lu\n", strlen(d));
+    printf("Uncompressed string is: %s\n", d);
+	
+	//#################################################################################################################################################
+
+	printf("original data size: %lu\n", data.size());
+	
+	char b[1000000];
+	// zlib struct
+    z_stream defstream;
+    defstream.zalloc = Z_NULL;
+    defstream.zfree = Z_NULL;
+    defstream.opaque = Z_NULL;
+    // setup "a" as the input and "b" as the compressed output
+    defstream.avail_in = (uInt)data.size(); // size of input
+//	defstream.next_in = (Bytef *)&data[0]; // input char array
+    defstream.next_in = (Bytef *)data.data(); // input char array
+    defstream.avail_out = (uInt)sizeof(b); // size of output
+    defstream.next_out = (Bytef *)b; // output char array
+    
+    // the actual compression work.
+    deflateInit(&defstream, Z_BEST_COMPRESSION);
+    deflate(&defstream, Z_FINISH);
+    deflateEnd(&defstream);
+    // This is one way of getting the size of the output
+    printf("Compressed size is: %lu\n", strlen(b));
+    printf("Compressed string is: %s\n", b);
+    
+    for(auto i=0; i<strlen(b); i++) temp.push_back(b[i]);
+	write_chunk(file, temp, "IDAT");
+	
+	//#################################################################################################################################################
+	
+//	char b[10000];
+//	// zlib struct
+//    z_stream defstream;
+//    defstream.zalloc = Z_NULL;
+//    defstream.zfree = Z_NULL;
+//    defstream.opaque = Z_NULL;
+//    // setup "a" as the input and "b" as the compressed output
+//    defstream.avail_in = (uInt)_width; // size of input
+//    defstream.avail_out = (uInt)sizeof(b); // size of output
+//    
+//    for(auto scanline=0; scanline<_height; scanline++){
+//		defstream.next_in = (Bytef *)&data[_width*scanline]; // input char array
+////		defstream.next_in = (Bytef *)data.data(); // input char array
+//		defstream.next_out = (Bytef *)b; // output char array
+//		// the actual compression work.
+//		deflateInit(&defstream, Z_BEST_COMPRESSION);
+//		deflate(&defstream, Z_FINISH);
+//		deflateEnd(&defstream);
+//		// update the vector
+//		for(auto i=0; i<strlen(b); i++) temp.push_back(b[i]);
+//	}
+//	write_chunk(file, temp, "IDAT");
+
+	//#################################################################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	
 	// 2.3) Image End chunk (0 length):
 	temp.clear();
@@ -346,6 +469,24 @@ unsigned int PNGimage::crc32(unsigned char *buffer, int len)
 //	for(auto i=0; i<length; i++) crc = (crc >> 8) ^ crcTable[data[i] ^ (crc & 0xFF)];
 //	return ~crc; //same as c ^ 0xFFFFFFFF
 //}
+
+
+
+std::vector<unsigned char> PNGimage::bigEndian_vec(int32_t x)
+{
+	// convert a 32 bit integer into a byte vector in Big-Endian notation
+	// QUESTA FUNZIONE MI SA CHE E` INUTILE
+	std::vector<unsigned char> res;
+	
+	res.push_back((x & 0xFF000000)>>24);
+	res.push_back((x & 0x00FF0000)>>16);
+	res.push_back((x & 0x0000FF00)>>8);
+	res.push_back((x & 0x000000FF));
+	
+	return res;
+}
+
+
 
 
 

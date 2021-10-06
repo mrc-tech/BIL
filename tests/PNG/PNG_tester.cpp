@@ -2,16 +2,19 @@
 
 #include "PNGimage2.h"
 
+
 using namespace std;
 
 
 
 int main()
 {
-	PNGimage img(1,1);
+	PNGimage img(10,10);
 	
 	
-	for(auto i=0; i<10; i++) for(auto j=0; j<10; j++) img.set_pixel(i,j, 0xFF,0xAD,0x00);
+	for(auto i=0; i<10; i++)
+		for(auto j=0; j<10; j++)
+			img.set_pixel(i,j, 0xFF,0x00,0x00); // 0x FF AD 00 = orange
 	
 	img.save_file("prova.png", 10*3);
 	
