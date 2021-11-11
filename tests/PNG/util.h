@@ -13,3 +13,4 @@ REVERSE_BITS:
     }
     return rv;
 }
+// usare sizeof(T) invece di bits_num????
