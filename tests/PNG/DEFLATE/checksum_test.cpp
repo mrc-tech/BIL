@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include "crc32.h"
 #include "Adler32.h"
 
 using namespace std;
@@ -27,7 +28,9 @@ int main(int argc, char **argv)
 		str += argv[argc-1]; // aggiunge l'uiltimo senza spazio alla fine
 	}
 	
-	printf("%s : %08X \n", str.c_str(), Adler32(str2vec(str)));
+	cout << "String = " << str << endl;
+	printf("CRC32B  : %08X \n",   crc32(str2vec(str)));
+	printf("ADLER32 : %08X \n", Adler32(str2vec(str)));
 	
 	return 0;
 }

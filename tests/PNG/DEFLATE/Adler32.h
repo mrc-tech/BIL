@@ -8,7 +8,7 @@
 
 uint32_t Adler32_update(uint32_t adler, std::vector<unsigned char> data)
 {
-	// return a 32 bit (4 byte) Adler-32 checksum
+	// update a 32 bit (4 byte) Adler-32 checksum due to new data
 	// update funcion used in DEFLATE algorithm for hashing only specific data
 	uint32_t s1 =  adler        & 0xFFFF; // least significant 16 bit
 	uint32_t s2 = (adler >> 16) & 0xFFFF; // most significant 16 bit

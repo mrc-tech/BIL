@@ -45,3 +45,15 @@ inline void write_to_stream(std::ofstream& stream, const std::vector<T>& t)
 	for(auto i=0; i<t.size(); i++)
 		stream.write(reinterpret_cast<const char*>(&t[i]), sizeof(T));
 }
+
+
+
+
+void append_to_vector(std::vector<unsigned char> &vec, std::vector<unsigned char> v)
+{
+	// append the vector v to the vector vec
+	for(auto i=0; i<v.size(); i++)
+		vec.push_back(v[i]);
+}
+
+
