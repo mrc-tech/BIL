@@ -47,10 +47,8 @@ void writePNG(std::ofstream& stream, unsigned w, unsigned h, const unsigned char
 	for(int y=0; y<h; y++){ // Each horizontal line makes a block for simplicity
 		temp.push_back(y == h - 1); // 1 for the last block, 0 for others (1 byte) */
 		unsigned size = w * (alpha ? 4 : 3) + 1; // Size of block in little endian and its 1's complement (4 bytes)
-		temp.push_back(( size     ) & 0xFF);  
-		temp.push_back(( size >> 8) & 0xFF);
-		temp.push_back((~size     ) & 0xFF);
-		temp.push_back((~size >> 8) & 0xFF);
+		temp.push_back(( size) & 0xFF); temp.push_back(( size >> 8) & 0xFF);
+		temp.push_back((~size) & 0xFF); temp.push_back((~size >> 8) & 0xFF);
 		temp.push_back(0); ADLERa = (ADLERa + (0)) % 65521; ADLERb = (ADLERb + ADLERa) % 65521; // No filter prefix (1 byte)
 		for (int x=0; x<w*(alpha?4:3); x++){
         	temp.push_back(*img); // append byte without compression
