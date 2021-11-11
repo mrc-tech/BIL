@@ -1,0 +1,11 @@
+dovrei mettere DEFLATE dentro la classe ZLIB, che, oltre a DEFLATE, contiene anche ADLER-32
+
+
+ZLIB
+ |
+ +---DEFLATE (utilizza Huffmann e LZ77 insieme anche a INFLATE ,ma al contrario)
+ |      |
+ |      +----Huffmann
+ |      +----LZ77
+ |
+ +---Adler32
