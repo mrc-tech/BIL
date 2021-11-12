@@ -67,6 +67,7 @@ class Image
 		void insertImage(int x,int y, Image img);
 		
 		inline void penColor(const byte& R,const byte& G,const byte& B) { _penColor = {R,G,B}; }
+		inline void penColor(const color& c) { _penColor = c; }
 		inline void penWidth(const uint& width) { _penWidth = width; }
 		
 		//saveFile:
