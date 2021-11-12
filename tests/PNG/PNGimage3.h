@@ -12,6 +12,7 @@ ToDo:
 
 #include "BasicImage.h"
 #include "zlib2.h"
+#include "util.h"
 
 #include <iostream> //TEMPORANEO, PER IL DEBUG
 
@@ -58,8 +59,10 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	
 	// 2.1) Image Header "IHDR" chunk (13 data bytes total):
 	std::vector<unsigned char> temp;
-	temp.push_back((_width &0xFF000000)>>24); temp.push_back((_width &0x00FF0000)>>16); temp.push_back((_width &0x0000FF00)>>8); temp.push_back((_width &0x000000FF)); //image Width  (Big-Endian)
-	temp.push_back((_height&0xFF000000)>>24); temp.push_back((_height&0x00FF0000)>>16); temp.push_back((_height&0x0000FF00)>>8); temp.push_back((_height&0x000000FF)); //image Height (Big-Endian)
+//	temp.push_back((_width &0xFF000000)>>24); temp.push_back((_width &0x00FF0000)>>16); temp.push_back((_width &0x0000FF00)>>8); temp.push_back((_width &0x000000FF)); //image Width  (Big-Endian)
+//	temp.push_back((_height&0xFF000000)>>24); temp.push_back((_height&0x00FF0000)>>16); temp.push_back((_height&0x0000FF00)>>8); temp.push_back((_height&0x000000FF)); //image Height (Big-Endian)
+	append_to_vector(temp, bigEndian2vec(_width)); //image Width (Big-Endian)
+	append_to_vector(temp, bigEndian2vec(_height)); //image Height (Big-Endian)
 	temp.push_back(8); // bit depth (1 byte, values 1, 2, 4, 8, or 16)
 	temp.push_back(2); // color type (1 byte, values 0:grayscale, 2:RGB, 3:indexed(palette), 4:grayscale&alpha, or 6:RGBA)
 	temp.push_back(0); // compression method (1 byte, value 0)
