@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "PNGimage2.h"
+#include "PNGimage3.h"
 
 
 using namespace std;

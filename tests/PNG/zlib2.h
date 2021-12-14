@@ -1384,7 +1384,7 @@ unsigned zlib_compress(unsigned char** out, size_t* outsize, const unsigned char
   ucvector deflatedata;
   size_t deflatesize = 0;
 
-  error = deflate(&deflatedata, &deflatesize, in, insize, settings);
+  error = deflate(&deflatedata, in, insize, settings); // DOVREI RITORNARE LA DIMENSIONE DEL VETTORE DI OUTPUT
 
   *out = NULL;
   *outsize = 0;
@@ -1406,11 +1406,11 @@ unsigned zlib_compress(unsigned char** out, size_t* outsize, const unsigned char
 
     (*out)[0] = (unsigned char)(CMFFLG >> 8);
     (*out)[1] = (unsigned char)(CMFFLG & 255);
-    for(i = 0; i != deflatesize; ++i) (*out)[i + 2] = deflatedata[i];
+    for(i = 0; i != deflatesize; ++i) (*out)[i + 2] = deflatedata.data[i];
     lodepng_set32bitInt(&(*out)[*outsize - 4], ADLER32);
   }
 
-  free(deflatedata);
+  free(&deflatedata);
   return error;
 }
 

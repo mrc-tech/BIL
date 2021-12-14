@@ -82,11 +82,15 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	//#################################################################################################################################################
 	
 	unsigned error = 0;
-	ize_t zlibsize = 0;
+	size_t zlibsize = 0;
+	
+	unsigned char *pollo;
+	pollo = (unsigned char*)malloc(data.size());
+	for(int i=0; i<data.size(); i++) pollo[i] = data[i];
 
-	temp = zlib_compress(data, &zlibsize, zlibsettings);
+	temp = zlib_compress(pollo, data.size(), &zlibsize, 1);
 	
-	
+	free(pollo);
 	
 	
 	//#################################################################################################################################################

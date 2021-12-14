@@ -58,7 +58,7 @@ inline void append_to_vector(std::vector<T> &vec, std::vector<T> v)
 
 
 
-inline std::vector<unsigned char> PNGimage::u32bigEndian2vec(int32_t x)
+inline std::vector<unsigned char> u32bigEndian2vec(int32_t x)
 {
 	// convert a 32 bit integer into a byte vector in Big-Endian notation
 	std::vector<unsigned char> res;
@@ -73,7 +73,7 @@ inline std::vector<unsigned char> PNGimage::u32bigEndian2vec(int32_t x)
 
 
 template<typename T>
-inline std::vector<unsigned char> PNGimage::bigEndian2vec(T x)
+inline std::vector<unsigned char> bigEndian2vec(T x)
 {
 	// convert an integer into a byte vector in Big-Endian notation
 	std::vector<unsigned char> res;
