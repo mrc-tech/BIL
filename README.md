@@ -22,15 +22,13 @@ To use the class include the "`Image.hpp`" header file (inside the `include` fol
 ```c++
 #include "Image.hpp"          // include the Image class
 
-int main()
+void main()
 {
    Image img(800,600);        // create an 800x600 pixels image
    img.clear(255,255,255);    // set all pixels to white
    img.line(0,0,800,800);     // draw a diagonal line on the image
    
    img.save_bmp("image.bmp"); // save image as 24-bit Bitmap file
-   
-   return 0;
 }
 ```
 It can be used also the single header-file `Image.h` which includes all the separated nested header files. This file is generated through the automated software [`header-merger`](https://github.com/mrc-tech/header-merger) developed by me.
