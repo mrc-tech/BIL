@@ -22,7 +22,7 @@ To use the class include the "`Image.hpp`" header file (inside the `include` fol
 ```c++
 #include "Image.hpp"          // include the Image class
 
-void main()
+int main()
 {
    Image img(800,600);        // create an 800x600 pixels image
    img.clear(255,255,255);    // set all pixels to white
