@@ -41,7 +41,7 @@ For other, more complex, examples please see `examples` folder.
 
 ![Lorentz_system](https://user-images.githubusercontent.com/74192712/128616684-a4f9e877-573b-46f6-ad36-f704f2cc23a7.png)
 
-https://user-images.githubusercontent.com/74192712/158827835-e047fd7b-b652-4503-9554-db2a4a361f48.mp4
+![Italy_EQ](https://github.com/mrc-tech/Bitmap/assets/74192712/977ff19a-567e-4bc6-a277-3b449da79913)
 
 
 
