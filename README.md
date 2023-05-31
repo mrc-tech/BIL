@@ -35,7 +35,7 @@ It can be used also the single header-file `Image.h` which includes all the sepa
 
 For other, more complex, examples please see `examples` folder.
 
-## Images
+## Examples
 
 ![Mandelbrot_set](https://user-images.githubusercontent.com/74192712/128616712-8b2ed28f-9759-49a6-aa8d-c4bdda74c2e5.png)
 
