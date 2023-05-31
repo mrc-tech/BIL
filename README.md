@@ -14,7 +14,7 @@ The author is very busy with academic obligation so updates in this projct are n
 ## Design objectives
  - All classes and functions in header files (no precompiled library or external dependencies)
  - Easy to use and the code can be understanded easly
- - Works on Windows and Linux (C++11 standard)
+ - Works on Windows, Linux and Android (C++11 standard)
  - Unlicensed (anyone can use and modify it as wanted)
 
 ## Usage
