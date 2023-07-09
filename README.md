@@ -62,3 +62,4 @@ For the moment this _todo list_ is written in italian. As far as the first contr
  - Fare una routine di *Anti Aliasing* sull'immagine
  - Fare un programma ulteriore (proprio un altro progetto) che trasforma la serie di immagini in un video... (oppure usare `ffmpeg`)
  - Mettere la funzione che disegna uno "squircle" (vedere il video su youtube). che gli dai _r_ e _n_ (capire come disegnare dalla formula). O anche solamente fare un esempio...
+ - nell'introduzione di questo readme mettere un link di riferimento anche al futuro repo `HPlotter` che usa SIL per stampare i grafici in png
