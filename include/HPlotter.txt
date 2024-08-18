@@ -1,0 +1,3 @@
+mettere la libreria HPlotter.hpp qua
+
+HPlotter e` una classe derivata da Image e per questo ne eredita tutte le funzioni

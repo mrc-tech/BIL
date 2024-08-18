@@ -1,0 +1,308 @@
+
+  An Explanation of the /Deflate/ Algorithm
+
+
+    Antaeus Feldspar <mailto:feldspar@netcom.com>
+
+------------------------------------------------------------------------
+<mailto:feldspar@netcom.com>
+/This article was originally posted to /
+<mailto:feldspar@netcom.com>/comp.compression <news:comp.compression> on
+23 August 1997./
+
+------------------------------------------------------------------------
+
+It's important before trying to understand DEFLATE to understand the
+other two compression strategies that make it up -- Huffman coding and
+LZ77 compression.
+
+
+      Huffman coding
+
+Huffman coding is a form of prefix coding, which you may not think you
+know. But you've almost certainly used a prefix code -- when using the
+phone. Starting from the dial tone, you press a sequence of what may be
+five, seven, eight, eleven, twelve, or some other number of keys -- and
+each sequence of keys reaches another specific phone line.
+
+Now suppose you're in an office setting with an internal switchboard, as
+many large companies do. All other phones within the bank only require
+five numbers to dial, instead of seven -- that's because it's expected
+that you'll be calling those numbers more often. You may still need to
+call other numbers, though -- so all of those numbers have a `9' added
+to the front.
+
+That's a prefix code. Each element that you could want to specify has a
+code made up of numbers, and because no code for one element begins with
+the code for any other element, you can type in that code and there will
+be no ambiguity about that being the one you mean.
+
+A Huffman code is a prefix code prepared by a special algorithm. Here,
+instead of each code being a series of numbers between 0 and 9, each
+code is a series of bits, either 0 or 1. Instead of each code
+representing a phone, each code represents an element in a specific
+``alphabet'' (such as the set of ASCII characters, which is the primary
+but not the only use of Huffman coding in DEFLATE).
+
+A Huffman algorithm starts by assembling the elements of the
+``alphabet,'' each one being assigned a ``weight'' -- a number that
+represents its relative frequency within the data to be compressed.
+These weights may be guessed at beforehand, or they may be measured
+exactly from passes through the data, or some combination of the two. In
+any case, the elements are selected two at a time, the elements with the
+lowest weights being chosen. The two elements are made to be leaf nodes
+of a node with two branches (I really hope you know nodes and trees...)
+Anyway, suppose we had a set of elements and weights that looked like this:
+
+    A    16
+    B    32
+    C    32
+    D     8
+    E     8
+
+We would pick D and E first, and make them branches of a single node --
+one being the `0' branch, and one the `1' branch.
+
+     ( )
+  0 /   \ 1
+   D     E
+
+At this point, no element has been given its complete code yet, but we
+now know that the codes for D and E will be exactly the same, except for
+the last binary digit: D will end in 0 and E in 1.
+
+The combined node D-and-E is placed back with the other (as yet)
+uncombined elements, and given a weight equal to the sum of its leaf
+nodes: in this case, 8 + 8 = 16. Again, we take the two nodes with
+lowest weight, which are A, and D-and-E, and join them into a larger node.
+
+       ( )
+    0 /   \ 1
+    ( )    A
+ 0 /   \ 1
+  D     E
+
+This time, when the node A-D-E is put back into the list of elements,
+all remaining elements have the same weight, 32. Which two of the three
+are selected to be combined first is not important, at least not in the
+classical Huffman algorithm.
+
+When all nodes have been recombined into a single ``Huffman tree,'' then
+by starting at the root and selecting 0 or 1 at each step, you can reach
+any element in the tree. Each element now has a Huffman code, which is
+the sequence of 0's and 1's that represents that path through the tree.
+
+Now, it should be fairly easy to see how such a tree, and such a set of
+codes, could be used for compression. If compressing ordinary text, for
+example, probably more than half of the ASCII character set could be
+left out of the tree altogether. Frequently used characters, like `E'
+and `T' and `A,' will probably get much shorter codes, and even if some
+codes are actually made longer, they will be the ones that are used less
+often.
+
+However, there is also the question: how do you pass the tree along with
+the encoded data? It turns out that there is a fairly simple way, if you
+modify slightly the algorithm used to generate the tree.
+
+In the classic Huffman algorithm, a single set of elements and weights
+could generate multiple trees. In the variation used by the Deflate
+standard, there are two additional rules: elements that have shorter
+codes are placed to the left of those with longer codes. (In our
+previous example, D and E wind up with the longest codes, and so they
+would be all the way to the right.) Among elements with codes of the
+same length, those that come first in the element set are placed to the
+left. (If D and E end up being the only elements with codes of that
+length, then D will get the 0 branch and E the 1 branch, as D comes
+before E.)
+
+It turns out that when these two restrictions are placed upon the trees,
+there is at most one possible tree for every set of elements and their
+respective codelengths. The codelengths are all that we need to
+reconstruct the tree, and therefore all that we need to transmit.
+
+------------------------------------------------------------------------
+
+
+      LZ77 compression
+
+LZ77 compression works by finding sequences of data that are repeated.
+The term ``sliding window'' is used; all it really means is that at any
+given point in the data, there is a record of what characters went
+before. A 32K sliding window means that the compressor (and
+decompressor) have a record of what the last 32768 (32 * 1024)
+characters were. When the next sequence of characters to be compressed
+is identical to one that can be found within the sliding window, the
+sequence of characters is replaced by two numbers: a distance,
+representing how far back into the window the sequence starts, and a
+length, representing the number of characters for which the sequence is
+identical.
+
+I realize this is a lot easier to see than to just be told. Let's look
+at some highly compressible data:
+
+        Blah blah blah blah blah!
+
+Our datastream starts by receiving the following characters: `B,' `l,'
+`a,' `h,' ` ,' and `b.' However, look at the next five characters:
+
+         vvvvv
+        Blah blah blah blah blah!
+              ^^^^^
+
+There is an exact match for those five characters in the characters that
+have already gone into the datastream, and it starts exactly five
+characters behind the point where we are now. This being the case, we
+can output special characters to the stream that represent a number for
+length, and a number for distance.
+
+The data so far:
+
+        Blah blah b
+
+The compressed form of the data so far:
+
+        Blah b[D=5,L=5]
+
+The compression can still be increased, though to take full advantage of
+it requires a bit of cleverness on the part of the compressor. Look at
+the two strings that we decided were identical. Compare the character
+that follows each of them. In both cases, it's `l' -- so we can make the
+length 6, and not just five. But if we continue checking, we find the
+next characters, and the next characters, and the next characters, are
+still identical -- even if the so-called ``previous'' string is
+overlapping the string we're trying to represent in the compressed data!
+
+It turns out that the 18 characters that start at the second character
+are identical to the 18 characters that start at the seventh character.
+It's true that when we're decompressing, and read the length, distance
+pair that describes this relationship, we don't know what all those 18
+characters will be yet -- but if we put in place the ones that we know,
+we will know more, which will allow us to put down more... or, knowing
+that any length-and-distance pair where length > distance is going to be
+repeating (distance) characters again and again, we can set up the
+decompressor to do just that.
+
+It turns out our highly compressible data can be compressed down to just
+this:
+
+        Blah b[D=5, L=18]!
+
+------------------------------------------------------------------------
+
+
+      Putting it all together
+
+The deflate compressor is given a great deal of flexibility as to /how/
+to compress the data. The programmer must deal with the problem of
+designing smart algorithms to make the /right/ choices, but the
+compressor /does/ have choices about how to compress data.
+
+There are three modes of compression that the compressor has available:
+
+ 1. Not compressed at all. This is an intelligent choice for, say, data
+    that's already been compressed. Data stored in this mode will expand
+    slightly, but not by as much as it would if it were already
+    compressed and one of the other compression methods was tried upon it.
+ 2. Compression, first with LZ77 and then with Huffman coding. The trees
+    that are used to compress in this mode are defined by the Deflate
+    specification itself, and so no extra space needs to be taken to
+    store those trees.
+ 3. Compression, first with LZ77 and then with Huffman coding with trees
+    that the compressor creates and stores along with the data. 
+
+The data is broken up in ``blocks,'' and each block uses a single mode
+of compression. If the compressor wants to switch from non-compressed
+storage to compression with the trees defined by the specification, or
+to compression with specified Huffman trees, or to compression with a
+different pair of Huffman trees, the current block must be ended and a
+new one begun.
+
+------------------------------------------------------------------------
+
+The details of how the LZ77 and Huffman work together need some closer
+examination. Once the raw data has been turned into a string of
+characters and special length, distance pairs, these elements must be
+represented with Huffman codes.
+
+Though this is /NOT/, repeat, /NOT/ standard terminology, call the point
+where we start reading in bits a ``dial tone.'' After all, in our
+analogy, the dial tone is where you can start specifying a series of
+numbers that will end up mapping to a specific phone. So call the very
+beginning a ``dial tone.'' At that dial tone, one of three things could
+follow: a character, a length-distance pair, or the end of the block.
+Since we must be able to tell which it is, all the possible characters
+(``literals''), elements that indicate ranges of possible lengths
+(``lengths''), and a special end-of-block indicator are all merged into
+a single alphabet. That alphabet then becomes the basis of a Huffman
+tree. Distances don't need to be included in this alphabet, since they
+can only appear directly after lengths. Once the literal has been
+decoded, or the length-distance pair decoded, we are at another
+``dial-tone'' point and we start reading again. If we got the
+end-of-block symbol, of course, we're either at the beginning of another
+block or at the end of the compressed data.
+
+Length codes or distance codes may actually be a code that represents a
+base value, followed by extra bits that form an integer to be added to
+the base value.
+
+------------------------------------------------------------------------
+
+Probably the trickiest part of the DEFLATE specification to understand
+is the way trees are encoded to go along with the data, when that data
+is compressed with specialized trees.
+
+The trees are transmitted by their codelengths, as previously discussed.
+The codelengths are put all together into a sequence of numbers between
+0 and 15 (the Huffman trees that are created must be kept to codelengths
+of no more than 15; this is the tricky part, not the part about
+constraining the order of the elements).
+
+Not all the elements have to be given codelengths; if the last elements
+of an alphabet are of 0 codelengths, they can and probably should be
+left out. The number of elements in each of the two alphabets will be
+transmitted, so the trimmed alphabets go together into a single sequence.
+
+Once this sequence of codelengths is assembled, it is compressed with a
+form of what is called run-length compression. When several elements in
+a row have the same codelength (often 0) special symbols may be used to
+indicate the number of elements with this codelength. Our sequence is
+now a sequence of numbers between 0 and 18 (possibly with extra bits
+forming integers to modify base values, as was the case with the length
+and distance codes).
+
+A Huffman tree is created for this alphabet of 0-18. /Sigh/. The
+sequence of 0-18 codes and extra bits is prepared with the Huffman codes
+replacing the 0-18 elements.
+
+This Huffman tree needs to be included with the data, of course. Like
+the other Huffman trees, it will be included by recording the
+codelengths of the elements. However... once again, /*SIGH*/. They are
+not recorded in the order 0, 1, 2, 3, 4 ... 16, 17, 18. They are
+recorded in a special order: 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4,
+12, 3, 13, 2, 14, 1, 15. The logic behind this is that the elements near
+the end of sequence are most likely to have 0 codelengths (i.e. not be
+in the tree at all). If they are indeed 0, they can be trimmed from the
+end of the sequence; the number of elements that are being directly
+recorded is also included in the data.
+
+------------------------------------------------------------------------
+
+Those are the trouble points, I think, of the DEFLATE specs. Along with
+the specification itself and a bit of time, it should hopefully clear
+things up. If you have any other questions, please ask.
+
+/- Antaeus Feldspar (feldspar@netcom.com)
+<mailto:feldspar@netcom.com>/<mailto:feldspar@netcom.com>
+
+------------------------------------------------------------------------
+Click here to return to the <mailto:feldspar@netcom.com>zlib home page
+<https://zlib.net/feldspar.html>. /Last updated 13 april 2002./
+------------------------------------------------------------------------
+Web page copyright © 1996-2013 Greg Roelofs, Jean-loup Gailly
+<http://gailly.net/> and Mark Adler
+<http://en.wikipedia.org/wiki/Mark_Adler>.
+zlib software copyright © 1995-2012 Jean-loup Gailly
+<http://gailly.net/> and Mark Adler
+<http://en.wikipedia.org/wiki/Mark_Adler>. 	/zlib.org/ domain name
+donated by Andrew Green.
+

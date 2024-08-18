@@ -13,7 +13,7 @@ class BasicImage
 		unsigned int _width;
 		unsigned int _height;
 		
-		std::vector<unsigned char> data; //data in array format (array of bytes)
+		std::vector<unsigned char> data; // data in array format (array of bytes)
 		
 		unsigned int bytes_per_pixel;
 		unsigned int bytes_per_row;
@@ -69,27 +69,31 @@ BasicImage::BasicImage(const unsigned int width, const unsigned int height)
 
 void BasicImage::set_pixel(const unsigned int x, const unsigned int y, const unsigned char red, const unsigned char green, const unsigned char blue)
 {
-	// Set pixel color in BGR mode
+	if( (x<0) || (y<0) || (x>=static_cast<int>(_width)) || (y>=static_cast<int>(_height)) ) return;
+	
+	// Set pixel color in RGB mode
 	const unsigned int y_offset = y * bytes_per_row;
 	const unsigned int x_offset = x * bytes_per_pixel;
 	const unsigned int offset   = y_offset + x_offset;
 	
-	data[offset + 0] = blue;
+	data[offset + 0] = red;
 	data[offset + 1] = green;
-	data[offset + 2] = red;
+	data[offset + 2] = blue;
 }
 
 
 void BasicImage::get_pixel(const unsigned int x, const unsigned int y, unsigned char& red, unsigned char& green, unsigned char& blue) const
 {
-	// Get pixel color in BGR mode
+	if( (x<0) || (y<0) || (x>=static_cast<int>(_width)) || (y>=static_cast<int>(_height)) ) return;
+	
+	// Get pixel color in RGB mode
 	const unsigned int y_offset = y * bytes_per_row;
 	const unsigned int x_offset = x * bytes_per_pixel;
 	const unsigned int offset   = y_offset + x_offset;
 	
-	blue  = data[offset + 0];
+	red   = data[offset + 0];
 	green = data[offset + 1];
-	red   = data[offset + 2];
+	blue  = data[offset + 2];
 }
 
 
@@ -124,10 +128,10 @@ void BasicImage::load_file(std::string fileName)
 
 inline std::size_t file_size(const std::string& file_name)
 {
-	std::ifstream file(file_name.c_str(),std::ios::in | std::ios::binary);
+	std::ifstream file(file_name.c_str(), std::ios::in | std::ios::binary);
 	if (!file) return 0;
-	file.seekg (0, std::ios::end);
-	return static_cast<std::size_t>(file.tellg());
+	file.seekg(0, std::ios::end);
+	return static_cast<std::size_t> (file.tellg());
 }
 
 

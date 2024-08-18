@@ -1,0 +1,18 @@
+dovrei mettere DEFLATE dentro la classe ZLIB, che, oltre a DEFLATE, contiene anche ADLER-32
+
+
+ZLIB
+ |
+ +---DEFLATE (utilizza Huffmann e LZ77 insieme anche a INFLATE ,ma al contrario)
+ |      |
+ |      +----Huffmann
+ |      +----LZ77
+ |
+ +---Adler32
+
+
+
+Devo trovare un modo per creare un bitstream o usare delle classi per il bitstream messe a disposizione dal C++ per poter avere a che fare con i dati compressi.
+
+Devo anche studiare meglio i formati dei blocchi creati da DEFLATE congiuntamente con lo standard ZLIB
+
