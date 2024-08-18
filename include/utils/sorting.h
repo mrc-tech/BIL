@@ -1,5 +1,5 @@
-#ifndef MRC_SORTING
-#define MRC_SORTING
+#ifndef MRC_UTILS_SORTING
+#define MRC_UTILS_SORTING
 
 #include <algorithm> // for "sort"
 #include <vector>
@@ -15,4 +15,4 @@ void sort_by_vector(std::vector<A>& score, std::vector<B>& data)
 	for(int i=0; i<data.size(); i++)  data[i]  = vec[i].second;
 }
 
-#endif
+#endif // MRC_UTILS_SORTING

@@ -1,3 +1,7 @@
+#ifndef MRC_PNG_UTILS
+#define MRC_PNG_UTILS
+
+
 #include <vector>
 #include <fstream>
 
@@ -111,3 +115,4 @@ inline std::vector<unsigned char> bigEndian2vec(T x)
 }
 
 
+#endif // MRC_PNG_UTILS

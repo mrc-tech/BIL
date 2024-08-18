@@ -139,4 +139,4 @@ inline std::size_t file_size(const std::string& file_name)
 
 
 
-#endif
+#endif // MRC_BASIC_IMAGE

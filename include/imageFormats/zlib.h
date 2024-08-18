@@ -294,7 +294,7 @@ unsigned char * zlib_compress(unsigned char *data, int data_len, int *out_len, i
 		count = 0;
 		while (count < data_len) {
 			for (int i=0; i < blocklen; i++) { s1 += data[count+i]; s2 += s1; }
-			s1 %= 65521; s2 %= 65521;
+			s1 %= 65521; s2 %= 65521; // 65521 : largest prime smaller than 65536
 			count += blocklen;
 			blocklen = 5552;
 		}
@@ -312,4 +312,4 @@ unsigned char * zlib_compress(unsigned char *data, int data_len, int *out_len, i
 }
 
 
-#endif
+#endif // MRC_ZLIB

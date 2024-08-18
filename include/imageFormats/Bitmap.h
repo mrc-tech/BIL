@@ -313,4 +313,4 @@ std::size_t Bitmap::file_size(const std::string& file_name) const
 
 
 
-#endif
+#endif // MRC_BITMAP

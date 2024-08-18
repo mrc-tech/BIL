@@ -502,4 +502,4 @@ concerned does not understand them.
 
 
 
-#endif
+#endif // MRC_PNG_IMAGE

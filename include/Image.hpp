@@ -1,8 +1,9 @@
 /****************************************
-Simple Image Library (SIL)
+Basic Image Library (BIL)
 
+2021-2024
 Author:  Andrea Marchi (diescc@gmail.com)
-version: v0.4 (28/08/2021)
+version: v1.0 (19/08/2024)
 ****************************************/
 #ifndef MRC_IMAGE_HPP
 #define MRC_IMAGE_HPP
@@ -418,7 +419,7 @@ void Image::resize(int width,int height)
 #include "fonts/PS2THIN4.h"
 
 
-#endif
+#endif // MRC_IMAGE_HPP
 
 /*****************************************************
 funzioni che potrei aggiungere:

@@ -1,3 +1,6 @@
+#ifndef MRC_UTILS_STATISTICS
+#define MRC_UTILS_STATISTICS
+
 #include <vector>
 
 
@@ -30,3 +33,5 @@ double media(std::vector<double> x)
 	for(int i=0;i<N;i++) sum += x[i];
 	return sum / N;
 }
+
+#endif // MRC_UTILS_STATISTICS

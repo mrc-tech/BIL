@@ -5,4 +5,5 @@ Other files:
   - interp1.h     : Linear interpolation function (same as MatLAB one)
   - statistics.h  : mean, minimum, maximum and other useful statistics functions
   - strings.h     : String manipulation functions
-  - 
+  - sorting.h     : Sort data and score vectors based on score vector
+  - png_utils.h   : Utilities for PNG compression (DA SISTEMARE DENTRO zlib!!!)

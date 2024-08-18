@@ -45,4 +45,4 @@ std::vector<T> interp1(std::vector<T> x, std::vector<T> y, std::vector<T> vals)
 
 
 
-#endif
+#endif // MRC_INTERP1
