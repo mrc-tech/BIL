@@ -11,10 +11,10 @@ ToDo:
 #define MRC_PNG_IMAGE
 
 #include "BasicImage.h"
-#include "zlib2.h"
+#include "zlib.h"
 #include "util.h"
 
-#include <iostream> //TEMPORANEO, PER IL DEBUG
+#include <iostream> // TEMPORANEO, PER IL DEBUG!!!!!!!!!!!!!!
 
 #define CHUNK 32768 // 32 Kb
 
@@ -61,8 +61,8 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	std::vector<unsigned char> temp;
 //	temp.push_back((_width &0xFF000000)>>24); temp.push_back((_width &0x00FF0000)>>16); temp.push_back((_width &0x0000FF00)>>8); temp.push_back((_width &0x000000FF)); //image Width  (Big-Endian)
 //	temp.push_back((_height&0xFF000000)>>24); temp.push_back((_height&0x00FF0000)>>16); temp.push_back((_height&0x0000FF00)>>8); temp.push_back((_height&0x000000FF)); //image Height (Big-Endian)
-	append_to_vector(temp, bigEndian2vec(_width)); //image Width (Big-Endian)
-	append_to_vector(temp, bigEndian2vec(_height)); //image Height (Big-Endian)
+	append_to_vector(temp, bigEndian2vec(_width)); // image Width (Big-Endian)
+	append_to_vector(temp, bigEndian2vec(_height)); // image Height (Big-Endian)
 	temp.push_back(8); // bit depth (1 byte, values 1, 2, 4, 8, or 16)
 	temp.push_back(2); // color type (1 byte, values 0:grayscale, 2:RGB, 3:indexed(palette), 4:grayscale&alpha, or 6:RGBA)
 	temp.push_back(0); // compression method (1 byte, value 0)
@@ -73,7 +73,7 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	
 	// 2.2) Data "IDAT" chunk:
 	temp.clear();
-//	write_chunk(file, {0x08, 0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x03, 0x01, 0x01, 0x00}, "IDAT"); //hardcoded red single pixel
+//	write_chunk(file, {0x08, 0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x03, 0x01, 0x01, 0x00}, "IDAT"); // hardcoded red single pixel (ci sta il canale alpha all'inizio??)
 	/*
 	{0x08,     0xD7,     0x63,     0xF8,     0xCF,     0xC0,     0x00,     0x00,     0x03,     0x01,     0x01,     0x00    }
 	{00001000, 11010111, 01100011, 11111000, 11001111, 11000000, 00000000, 00000000, 00000011, 00000001, 00000001, 00000000}
@@ -81,17 +81,23 @@ void PNGimage::save_file(std::string fileName, int stride_bytes)
 	
 	//#################################################################################################################################################
 	
-	unsigned error = 0;
-	size_t zlibsize = 0;
+	for(int i=0; i<data.size(); i+=_width*3+1) data.insert(data.begin() + i, 0); // aggiunge all'inizio di ogni scanline il filtro usato (00)
 	
-	unsigned char *pollo;
+	unsigned error = 0;
+	int zlibsize = 0;
+	
+	unsigned char *pollo, *temp2;
 	pollo = (unsigned char*)malloc(data.size());
-	for(int i=0; i<data.size(); i++) pollo[i] = data[i];
+	for(size_t i=0; i<data.size(); i++) pollo[i] = data[i];
 
-	temp = zlib_compress(pollo, data.size(), &zlibsize, 1);
+	temp2 = zlib_compress(pollo, data.size(), &zlibsize, 1);
+	
+	for(size_t i=0; i<zlibsize; i++) temp.push_back(temp2[i]); // copia i dati compressi da temp2 a temp (da puntatore a vector)
+//	for(size_t i=0; i<zlibsize; i++) std::cout << std::hex << (int)temp2[i] << " "; std::cout << std::endl;
+//	for(auto x : temp) std::cout << std::hex << (int)x << " "; std::cout << std::endl;
 	
 	free(pollo);
-	
+	free(temp2);
 	
 	//#################################################################################################################################################
 	

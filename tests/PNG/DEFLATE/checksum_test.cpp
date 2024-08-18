@@ -7,7 +7,7 @@ using namespace std;
 
 
 
-vector<unsigned char> str2vec(string str)
+vector<unsigned char> str2bin(string str)
 {
 	// converte una stringa in un vettore di bytes
 	vector<unsigned char> res;
@@ -29,8 +29,8 @@ int main(int argc, char **argv)
 	}
 	
 	cout << "String = " << str << endl;
-	printf("CRC32B  : %08X \n",   crc32(str2vec(str)));
-	printf("ADLER32 : %08X \n", Adler32(str2vec(str)));
+	printf("CRC32B  : %08X \n",   crc32(str2bin(str)));
+	printf("ADLER32 : %08X \n", Adler32(str2bin(str)));
 	
 	return 0;
 }

@@ -23,7 +23,7 @@ uint32_t Adler32_update(uint32_t adler, std::vector<unsigned char> data)
 uint32_t Adler32(std::vector<unsigned char> data)
 {
 	// return a 32 bit (4 byte) Adler-32 checksum
-	return Adler32_update(1L, data); //The Adler-32 checksum should be initialized to 1.
+	return Adler32_update(1L, data); // The Adler-32 checksum should be initialized to 1.
 }
 
      

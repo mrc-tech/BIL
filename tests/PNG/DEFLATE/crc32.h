@@ -81,9 +81,9 @@ unsigned int crc32(std::vector<unsigned char> data)
 {
 	// conversion from vector to array (uses memory to reallocate the data...)
 	unsigned char *buf = new unsigned char[data.size()];
-	for(auto i=0; i<data.size(); i++)
-		buf[i] = data[i];
+	for(auto i=0; i<data.size(); i++) buf[i] = data[i];
 	
+//	return crc32_slow(buf, data.size());
 	return crc32(buf, data.size());
 }
 

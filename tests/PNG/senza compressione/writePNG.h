@@ -31,8 +31,8 @@ void writePNG(std::ofstream& stream, unsigned w, unsigned h, const unsigned char
 	
 	// 2.1) Image Header "IHDR" chunk (13 data bytes total):
 	std::vector<unsigned char> temp;
-	temp.push_back((w&0xFF000000)>>24); temp.push_back((w&0x00FF0000)>>16); temp.push_back((w&0x0000FF00)>>8); temp.push_back((w&0x000000FF)); //image Width  (Big-Endian)
-	temp.push_back((h&0xFF000000)>>24); temp.push_back((h&0x00FF0000)>>16); temp.push_back((h&0x0000FF00)>>8); temp.push_back((h&0x000000FF)); //image Height (Big-Endian)
+	temp.push_back((w&0xFF000000)>>24); temp.push_back((w&0x00FF0000)>>16); temp.push_back((w&0x0000FF00)>>8); temp.push_back((w&0x000000FF)); // image Width  (Big-Endian)
+	temp.push_back((h&0xFF000000)>>24); temp.push_back((h&0x00FF0000)>>16); temp.push_back((h&0x0000FF00)>>8); temp.push_back((h&0x000000FF)); // image Height (Big-Endian)
 	temp.push_back(8); // bit depth (1 byte, values 1, 2, 4, 8, or 16)
 	temp.push_back(alpha ? 6 : 2); // color type (1 byte, values 0:grayscale, 2:RGB, 3:indexed(palette), 4:grayscale&alpha, or 6:RGBA)
 	temp.push_back(0); // compression method (1 byte, value 0)
@@ -118,7 +118,7 @@ unsigned int crc32(unsigned char *buffer, int len)
 	};
 	
 	unsigned int crc = ~0u;
-	for(int i=0; i<len; i++) crc = (crc >> 8) ^ crc_table[buffer[i] ^ (crc & 0xff)];
+	for(int i=0; i<len; i++) crc = (crc >> 8) ^ crc_table[buffer[i] ^ (crc & 0xFF)];
 	return ~crc;
 }
 
@@ -127,21 +127,21 @@ unsigned int crc32(unsigned char *buffer, int len)
 
 void write_chunk(std::ofstream& stream, std::vector<unsigned char> data, std::string type)
 {
-	unsigned length = data.size(); //length of chunk (4 bytes [32 bits])
+	unsigned length = data.size(); // length of chunk (4 bytes [32 bits])
 	char chunk_type[4] = {type[0],type[1],type[2],type[3]};
 	
-	write_to_stream(stream, _byteswap_ulong(length)); //writes length of chunk (4 bytes Big-Endian)
-	write_to_stream(stream, chunk_type); //writes the chunk type (4 bytes)
+	write_to_stream(stream, _byteswap_ulong(length)); // writes length of chunk (4 bytes Big-Endian)
+	write_to_stream(stream, chunk_type); // writes the chunk type (4 bytes)
 	
 	for(auto i=0; i<length; i++){
-		write_to_stream(stream, data[i]); //write data to stream (byte per byte)
+		write_to_stream(stream, data[i]); // write data to stream (byte per byte)
 	}
 	
-	unsigned char* buf = new unsigned char[4+length]; //CRC32B of chunk_type (4 bytes) and data (length bytes)
+	unsigned char* buf = new unsigned char[4+length]; // CRC32B of chunk_type (4 bytes) and data (length bytes)
 	for(int i=0; i<4; i++) buf[i] = chunk_type[i];
 	for(int i=0; i<length; i++) buf[i+4] = data[i];
 	
-	write_to_stream(stream, _byteswap_ulong(crc32(buf,length+4))); //write CRC32 in Big-Endian
+	write_to_stream(stream, _byteswap_ulong(crc32(buf,length+4))); // write CRC32 in Big-Endian
 }
 
 

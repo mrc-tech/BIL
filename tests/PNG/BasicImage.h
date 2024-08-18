@@ -13,7 +13,7 @@ class BasicImage
 		unsigned int _width;
 		unsigned int _height;
 		
-		std::vector<unsigned char> data; //data in array format (array of bytes)
+		std::vector<unsigned char> data; // data in array format (array of bytes)
 		
 		unsigned int bytes_per_pixel;
 		unsigned int bytes_per_row;
@@ -71,14 +71,14 @@ void BasicImage::set_pixel(const unsigned int x, const unsigned int y, const uns
 {
 	if( (x<0) || (y<0) || (x>=static_cast<int>(_width)) || (y>=static_cast<int>(_height)) ) return;
 	
-	// Set pixel color in BGR mode
+	// Set pixel color in RGB mode
 	const unsigned int y_offset = y * bytes_per_row;
 	const unsigned int x_offset = x * bytes_per_pixel;
 	const unsigned int offset   = y_offset + x_offset;
 	
-	data[offset + 0] = blue;
+	data[offset + 0] = red;
 	data[offset + 1] = green;
-	data[offset + 2] = red;
+	data[offset + 2] = blue;
 }
 
 
@@ -86,14 +86,14 @@ void BasicImage::get_pixel(const unsigned int x, const unsigned int y, unsigned 
 {
 	if( (x<0) || (y<0) || (x>=static_cast<int>(_width)) || (y>=static_cast<int>(_height)) ) return;
 	
-	// Get pixel color in BGR mode
+	// Get pixel color in RGB mode
 	const unsigned int y_offset = y * bytes_per_row;
 	const unsigned int x_offset = x * bytes_per_pixel;
 	const unsigned int offset   = y_offset + x_offset;
 	
-	blue  = data[offset + 0];
+	red   = data[offset + 0];
 	green = data[offset + 1];
-	red   = data[offset + 2];
+	blue  = data[offset + 2];
 }
 
 
