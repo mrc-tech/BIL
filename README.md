@@ -1,4 +1,4 @@
-# BIL (Basic Image Library)
+# BIL (*Basic Image Library*)
 
 C++ library for images
 
