@@ -22,7 +22,7 @@ int main()
 	img.penColor(0,0,255); img.penWidth(1);
 	img.rect(0,0, img.width()-1,img.height()-1); // draw image edges
 	
-	img.save_bmp("plot1.bmp");
+	img.save_png("plot1.png");
 	
 	
 	return 0;

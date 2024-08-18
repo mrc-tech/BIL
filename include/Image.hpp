@@ -13,6 +13,7 @@ version: v0.4 (28/08/2021)
 #include <string>
 
 #include "imageFormats/Bitmap.h"
+#include "imageFormats/PNGimage.h"
 
 typedef  unsigned int   uint;
 typedef  unsigned char  byte;
@@ -72,6 +73,7 @@ class Image
 		
 		//saveFile:
 		void save_bmp(const std::string& fileName) const;
+		void save_png(const std::string& fileName) const; // DA METTERE ENTRAMBI IN UN UNICO METODO CHE VEDE L'ESTENSIONE...!!!!!!!!!!!!
 		
 		//loadFile:
 		void load_bmp(const std::string& fileName);
@@ -108,6 +110,18 @@ void Image::save_bmp(const std::string& fileName) const
 }
 
 
+void Image::save_png(const std::string& fileName) const
+{
+	PNGimage image(W, H);
+	
+	for(uint y=0; y<H; y++)
+		for(uint x=0; x<W; x++)
+			image.set_pixel(x,y, data[y*W+x].R, data[y*W+x].G, data[y*W+x].B);
+	
+	image.save_file(fileName);
+}
+
+
 
 
 void Image::load_bmp(const std::string& fileName)
@@ -127,6 +141,10 @@ void Image::load_bmp(const std::string& fileName)
 			this->set_pixel(x,y, {R,G,B});
 		}
 }
+
+
+
+
 
 
 

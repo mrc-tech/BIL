@@ -52,7 +52,7 @@ int main()
 	img.penColor(80,80,80);
 	img.text(1,img.height()-8-1, "Copyright (c) 2021 Marchi Technology", Portfolio_6x8);
 	
-	img.save_bmp("Lorentz_system.bmp");
+	img.save_png("Lorentz_system.png");
 	
 	
 	return 0;

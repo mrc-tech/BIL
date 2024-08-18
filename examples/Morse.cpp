@@ -40,7 +40,7 @@ int main()
 	for(int r=0; r<nRows; r++) img.line(0,r*scale*charHeight, img.width(),r*scale*charHeight);
 	for(int c=0; c<nCols; c++) img.line(c*scale*charWidth,0, c*scale*charWidth,img.height());
 	
-	img.save_bmp("Morse.bmp");
+	img.save_png("Morse.png");
 	
 	return 0;
 }

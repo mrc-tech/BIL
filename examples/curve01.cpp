@@ -3,7 +3,7 @@ https://en.wikipedia.org/wiki/Parametric_equation
 **************************************************/
 #include <cmath>
 
-#include "Image.h"
+#include "../include/Image.hpp"
 
 
 int main()
@@ -30,7 +30,7 @@ int main()
 		t += 0.000001;
 	}
 	
-	img.save_bmp("curve01.bmp");
+	img.save_png("curve01.png");
 	
 	
 	return 0;

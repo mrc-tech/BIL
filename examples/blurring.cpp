@@ -39,7 +39,7 @@ int main()
 	
 	img = upSample(img, 4); // makes the image 4 times bigger
 	
-	img.save_bmp("blurring.bmp");
+	img.save_png("blurring.png");
 	
 	return 0;
 }

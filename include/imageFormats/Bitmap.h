@@ -1,14 +1,16 @@
 #ifndef MRC_BITMAP
 #define MRC_BITMAP
 
+#include "BasicImage.h"
+
 #include <iostream>
 #include <fstream>
-#include <cstring> //for "memset"
+#include <cstring> // for "memset"
 #include <string>
 #include <vector>
 
 
-class Bitmap
+class Bitmap : public BasicImage
 {
 	public:
 		
@@ -45,36 +47,22 @@ class Bitmap
 		};
 		
 	public:
-		Bitmap() : _width(0), _height(0), bytes_per_pixel(3) {}
-		Bitmap(const std::string fileName) : _width(0), _height(0), bytes_per_pixel(0) { load_file(fileName); } // É NECESSARIO CHE SI SETTINO LE VARIABILI INTERNE??? no se lo fa load_file...
+//		using BasicImage::BasicImage; // inherit constructors (C++11)
+		Bitmap() { _width=0; _height=0; bytes_per_pixel=0; }
+		Bitmap(const std::string fileName) { _width=0; _height=0; bytes_per_pixel=0; load_file(fileName); } // É NECESSARIO CHE SI SETTINO LE VARIABILI INTERNE??? no se lo fa load_file...
 		Bitmap(const unsigned int width, const unsigned int height);
 		
-		//setters / getters:
-		void set_pixel(const unsigned int x, const unsigned int y, const unsigned char red, const unsigned char green, const unsigned char blue);
-		void get_pixel(const unsigned int x, const unsigned int y, unsigned char& red, unsigned char& green, unsigned char& blue) const;
-		inline unsigned int width()  const { return _width;  }
-		inline unsigned int height() const { return _height; }
-		
-		// save and load bitmap files
-		void save_file(std::string fileName);
-		void load_file(std::string fileName);
-		
+		void save_file(std::string fileName); // overload
+		void load_file(std::string fileName); // overload
 		
 	private:
-		unsigned int _width;
-		unsigned int _height;
-		std::vector<unsigned char> data; //data in array format (array of bytes)
-		unsigned int bytes_per_pixel;
-		unsigned int bytes_per_row;
 		bitmap_file_header 			bfh;
 		bitmap_information_header	bih;
 		
-		//auxilioary functions:
+		// auxilioary functions: QUESTE FUNZIONI FORSE SONO SIMILI A QUELLE IN png_utils.h (CONTROLLARE E SISTEMARE!!!!!!!!!!!!!!!)
 		inline bool big_endian() const { unsigned int v = 0x01; return (1 != reinterpret_cast<char*>(&v)[0]); }
 		inline unsigned short flip(const unsigned short& v) const { return ((v >> 8) | (v << 8)); }
 		inline unsigned int flip(const unsigned int& v) const { return ( ((v & 0xFF000000) >> 0x18) | ((v & 0x000000FF) << 0x18) | ((v & 0x00FF0000) >> 0x08) | ((v & 0x0000FF00) << 0x08) ); }
-		template<typename T> inline void read_from_stream(std::ifstream& stream,T& t) { stream.read(reinterpret_cast<char*>(&t),sizeof(T)); }
-		template<typename T> inline void write_to_stream(std::ofstream& stream,const T& t) const { stream.write(reinterpret_cast<const char*>(&t),sizeof(T)); }
 		void read_bfh(std::ifstream& stream, bitmap_file_header& bfh);
 		void write_bfh(std::ofstream& stream, const bitmap_file_header& bfh) const;
 		void read_bih(std::ifstream& stream,bitmap_information_header& bih);
@@ -88,41 +76,14 @@ class Bitmap
 
 
 Bitmap::Bitmap(const unsigned int width, const unsigned int height)
-: _width(width), _height(height), bytes_per_pixel(3)
 {
+	_width = width;
+	_height = height;
+	bytes_per_pixel = 3; // un byte per ogni componente RGB
 	bytes_per_row = _width * bytes_per_pixel;
 	data.resize(_height * bytes_per_row);
 }
 
-
-
-
-
-
-void Bitmap::set_pixel(const unsigned int x, const unsigned int y, const unsigned char red, const unsigned char green, const unsigned char blue)
-{
-	// Set pixel color in BGR mode
-	const unsigned int y_offset = y * bytes_per_row;
-	const unsigned int x_offset = x * bytes_per_pixel;
-	const unsigned int offset   = y_offset + x_offset;
-	
-	data[offset + 0] = blue;
-	data[offset + 1] = green;
-	data[offset + 2] = red;
-}
-
-
-void Bitmap::get_pixel(const unsigned int x, const unsigned int y, unsigned char& red, unsigned char& green, unsigned char& blue) const
-{
-	// Get pixel color in BGR mode
-	const unsigned int y_offset = y * bytes_per_row;
-	const unsigned int x_offset = x * bytes_per_pixel;
-	const unsigned int offset   = y_offset + x_offset;
-	
-	blue  = data[offset + 0];
-	green = data[offset + 1];
-	red   = data[offset + 2];
-}
 
 
 

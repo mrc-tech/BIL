@@ -36,7 +36,7 @@ int main()
 		R = R / (sin(delta_theta) + cos(delta_theta)); //this formula is true only for squares (N=4)
 	}
 	
-	img.save_bmp("recursive_square.bmp");
+	img.save_png("recursive_square.png");
 	
 	
 	return 0;

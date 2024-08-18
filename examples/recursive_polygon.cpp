@@ -36,7 +36,7 @@ int main()
 		R = R / (sin(delta_theta)*(1./tan(phi/2.)) + cos(delta_theta));
 	}
 	
-	img.save_bmp("recursive_polygon.bmp");
+	img.save_png("recursive_polygon.png");
 	
 	
 	return 0;

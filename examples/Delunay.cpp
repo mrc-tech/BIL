@@ -40,7 +40,7 @@ int main()
 	img.penWidth(3);
 	for(int i=0; i<NPOINTS; i++) img.drawPoint(X[i], Y[i]);
 	
-	img.save_bmp("Delunay.bmp");
+	img.save_png("Delunay.png");
 	
 	return 0;
 }

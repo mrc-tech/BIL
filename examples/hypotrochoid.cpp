@@ -27,7 +27,7 @@ int main()
 		t += 0.000001;
 	}
 	
-	img.save_bmp("hypotrochoid.bmp");
+	img.save_png("hypotrochoid.png");
 	
 	
 	return 0;

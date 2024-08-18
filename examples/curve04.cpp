@@ -1,6 +1,6 @@
 #include <fstream>
 
-#include "Image.h"
+#include "../include/Image.hpp"
 
 using namespace std;
 
@@ -38,5 +38,5 @@ int main()
 	img.circ(0  ,800,400);
 	img.circ(800,800,400); 
 	
-	img.save_bmp("curve04.bmp");
+	img.save_png("curve04.png");
 }

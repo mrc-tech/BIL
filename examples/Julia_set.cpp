@@ -45,7 +45,7 @@ int main()
 		}
 	}
 	
-	fractal.save_bmp("Julia_set.bmp");
+	fractal.save_png("Julia_set.png");
 	
 	return 0;
 }

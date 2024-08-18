@@ -24,7 +24,7 @@ int main()
 			img.text(x*cW, y*cH, str, font);
 		}
 	}
-	img.save_bmp("text.bmp");
+	img.save_png("text.png");
 	
 	return 0;
 }

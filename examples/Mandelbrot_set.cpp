@@ -53,7 +53,7 @@ int main()
 		}
 	}
 	
-	fractal.save_bmp("Mandelbrot_set.bmp");
+	fractal.save_png("Mandelbrot_set.png");
 	
 	return 0;
 }

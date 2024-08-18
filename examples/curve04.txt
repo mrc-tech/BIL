@@ -19,5 +19,5 @@ int main()
    img.circ(0  ,800,400);
    img.circ(800,800,400); 
    
-   img.save_bmp("image.bmp");
+   img.save_png("image.png");
 }
