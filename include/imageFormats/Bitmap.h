@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <fstream>
-#include <cstring> //per "memset"
+#include <cstring> //for "memset"
 #include <string>
 #include <vector>
 
@@ -52,6 +52,8 @@ class Bitmap
 		//setters / getters:
 		void set_pixel(const unsigned int x, const unsigned int y, const unsigned char red, const unsigned char green, const unsigned char blue);
 		void get_pixel(const unsigned int x, const unsigned int y, unsigned char& red, unsigned char& green, unsigned char& blue) const;
+		inline unsigned int width()  const { return _width;  }
+		inline unsigned int height() const { return _height; }
 		
 		// save and load bitmap files
 		void save_file(std::string fileName);
@@ -77,6 +79,7 @@ class Bitmap
 		void write_bfh(std::ofstream& stream, const bitmap_file_header& bfh) const;
 		void read_bih(std::ifstream& stream,bitmap_information_header& bih);
 		void write_bih(std::ofstream& stream, const bitmap_information_header& bih) const;
+		std::size_t file_size(const std::string& file_name) const;
 		
 };
 
@@ -172,106 +175,71 @@ void Bitmap::save_file(std::string fileName)
 
 void Bitmap::load_file(std::string fileName)
 {
-//	std::ifstream stream(file_name_.c_str(),std::ios::binary);
-//
-//      if (!stream)
-//      {
-//         std::cerr << "bitmap_image::load_bitmap() ERROR: bitmap_image - "
-//                   << "file " << file_name_ << " not found!" << std::endl;
-//         return;
-//      }
-//
-//      width_  = 0;
-//      height_ = 0;
-//
-//      bitmap_file_header bfh;
-//      bitmap_information_header bih;
-//
-//      bfh.clear();
-//      bih.clear();
-//
-//      read_bfh(stream,bfh);
-//      read_bih(stream,bih);
-//
-//      if (bfh.type != 19778)
-//      {
-//         std::cerr << "bitmap_image::load_bitmap() ERROR: bitmap_image - "
-//                   << "Invalid type value " << bfh.type << " expected 19778." << std::endl;
-//
-//         bfh.clear();
-//         bih.clear();
-//
-//         stream.close();
-//
-//         return;
-//      }
-//
-//      if (bih.bit_count != 24)
-//      {
-//         std::cerr << "bitmap_image::load_bitmap() ERROR: bitmap_image - "
-//                   << "Invalid bit depth " << bih.bit_count << " expected 24." << std::endl;
-//
-//         bfh.clear();
-//         bih.clear();
-//
-//         stream.close();
-//
-//         return;
-//      }
-//
-//      if (bih.size != bih.struct_size())
-//      {
-//         std::cerr << "bitmap_image::load_bitmap() ERROR: bitmap_image - "
-//                   << "Invalid BIH size " << bih.size
-//                   << " expected " << bih.struct_size() << std::endl;
-//
-//         bfh.clear();
-//         bih.clear();
-//
-//         stream.close();
-//
-//         return;
-//      }
-//
-//      width_  = bih.width;
-//      height_ = bih.height;
-//
-//      bytes_per_pixel_ = bih.bit_count >> 3;
-//
-//      unsigned int padding = (4 - ((3 * width_) % 4)) % 4;
-//      char padding_data[4] = { 0x00, 0x00, 0x00, 0x00 };
-//
-//      std::size_t bitmap_file_size = file_size(file_name_);
-//
-//      std::size_t bitmap_logical_size = (height_ * width_ * bytes_per_pixel_) +
-//                                        (height_ * padding)                   +
-//                                         bih.struct_size()                    +
-//                                         bfh.struct_size()                    ;
-//
-//      if (bitmap_file_size != bitmap_logical_size)
-//      {
-//         std::cerr << "bitmap_image::load_bitmap() ERROR: bitmap_image - "
-//                   << "Mismatch between logical and physical sizes of bitmap. "
-//                   << "Logical: "  << bitmap_logical_size << " "
-//                   << "Physical: " << bitmap_file_size    << std::endl;
-//
-//         bfh.clear();
-//         bih.clear();
-//
-//         stream.close();
-//
-//         return;
-//      }
-//
-//      create_bitmap();
-//
-//      for (unsigned int i = 0; i < height_; ++i)
-//      {
-//         unsigned char* data_ptr = row(height_ - i - 1); // read in inverted row order
-//
-//         stream.read(reinterpret_cast<char*>(data_ptr), sizeof(char) * bytes_per_pixel_ * width_);
-//         stream.read(padding_data,padding);
-//      }
+	std::ifstream stream(fileName.c_str(), std::ios::binary);
+	
+	if(!stream){
+		std::cerr << "Bitmap::load_file() ERROR: file " << fileName << " not found!" << std::endl;
+		return;
+	}
+	
+	_width  = 0;
+	_height = 0;
+	
+	bitmap_file_header bfh;
+	bitmap_information_header bih;
+	
+	bfh.clear();
+	bih.clear();
+	read_bfh(stream,bfh);
+	read_bih(stream,bih);
+	
+    if(bfh.type != 19778){
+		std::cerr << "Bitmap::load_file() ERROR: Invalid type value " << bfh.type << " expected 19778." << std::endl;
+		bfh.clear(); bih.clear();
+		stream.close();
+		return;
+	}
+	
+	if(bih.bit_count != 24){
+		std::cerr << "Bitmap::load_file() ERROR: Invalid bit depth " << bih.bit_count << " expected 24." << std::endl;
+		bfh.clear(); bih.clear();
+		stream.close();
+		return;
+	}
+	
+	if(bih.size != bih.struct_size()){
+		std::cerr << "Bitmap::load_file() ERROR: Invalid BIH size " << bih.size << " expected " << bih.struct_size() << std::endl;
+		bfh.clear(); bih.clear();
+		stream.close();
+		return;
+	}
+	
+	_width  = bih.width;
+    _height = bih.height;
+    
+	bytes_per_pixel = bih.bit_count >> 3;
+	bytes_per_row = _width * bytes_per_pixel;
+	
+	unsigned int padding = (4 - ((3 * _width) % 4)) % 4;
+	char padding_data[4] = { 0x00, 0x00, 0x00, 0x00 };
+	
+	std::size_t bitmap_file_size = file_size(fileName);
+	std::size_t bitmap_logical_size = (_height * bytes_per_row) + (_height * padding) + bih.struct_size() + bfh.struct_size();
+	if(bitmap_file_size != bitmap_logical_size){
+		std::cerr << "Bitmap::load_file() ERROR: Mismatch between logical and physical sizes of bitmap. Logical: " << bitmap_logical_size << " Physical: " << bitmap_file_size << std::endl;
+		bfh.clear(); bih.clear();
+		stream.close();
+		return;
+	}
+    
+	data.resize(_height * bytes_per_row); // allocate memory
+	
+	for(unsigned i=0; i<_height; i++){
+		unsigned char* data_ptr = &data[((_height-i-1) * bytes_per_row)]; // read in inverted row order
+		
+		stream.read(reinterpret_cast<char*>(data_ptr), sizeof(char) * bytes_per_row);
+		stream.read(padding_data, padding);
+	}
 }
 
 
@@ -373,19 +341,13 @@ void Bitmap::write_bih(std::ofstream& stream, const bitmap_information_header& b
 }
 
 
-//inline std::size_t file_size(const std::string& file_name) const
-//   {
-//      std::ifstream file(file_name.c_str(),std::ios::in | std::ios::binary);
-//      if (!file) return 0;
-//      file.seekg (0, std::ios::end);
-//      return static_cast<std::size_t>(file.tellg());
-//   }
-
-//void create_bitmap()
-//   {
-//      row_increment_ = width_ * bytes_per_pixel_;
-//      data_.resize(height_ * row_increment_);
-//   }
+std::size_t Bitmap::file_size(const std::string& file_name) const
+{
+	std::ifstream file(file_name.c_str(),std::ios::in | std::ios::binary);
+	if (!file) return 0;
+	file.seekg (0, std::ios::end);
+	return static_cast<std::size_t>(file.tellg());
+}
 
 
 

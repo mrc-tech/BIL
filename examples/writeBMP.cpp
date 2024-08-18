@@ -1,7 +1,7 @@
-/**************************************
+/***********************************************
 writes a bitmap file with all the shades of gray
 possible using 24-bit per pixel bitmp file
-**************************************/
+***********************************************/
 
 #include "../include/writeBMP.h"
 

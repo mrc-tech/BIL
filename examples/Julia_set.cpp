@@ -18,7 +18,7 @@ int main()
 //	c = {-0.74543, 0.11301};
 //	c = {-0.4, 0.6};
 //	c = {-0.835, -0.2321};
-	c = {0, -0.8}; // beautiful
+	c = {0, -0.8}; // beautiful image
 	
 	
 	const unsigned int max_iterations = 1024;
@@ -34,14 +34,13 @@ int main()
 				z = pow(z,2) + c; // z(n+1) = z(n)^2 + c
 				
 				if(abs(z) > eps){
-//					int index = (int)interp1({0,max_iterations},{0,1000}, (double)i);
+//					int index = (int)interp1({0,max_iterations},{0,1000}, (double)i); //linear scale
 					int index = (int)interp1({log(1),log(max_iterations+1)},{0,1000}, (double)log(i+1)); //logarithmic scale
 					
 					fractal.set_pixel(x,y, copper_colormap[index]);
 //					fractal.set_pixel(x,y, yarg_colormap[index]);
 					break;
 				}
-				
 			}
 		}
 	}

@@ -1,7 +1,12 @@
-Main files:
- - Image.hpp   : main file that implements the Image class
+## FILES ##
 
-Other files:
- - Bitmap.h    : Implementation of Bitmap class for writing bitmap images
- - palette.hpp : List of useful color palettes
+ - Image.hpp   : main file that implements the Image class
  - writeBMP    : Deprecated funcions (kept for nostalgia only)
+
+
+## FOLDERS ##
+
+ - fonts       : Bitmap font data
+ - palettes    : Palette colors data
+ - imageFormat : Image files format
+ - utils       : Utility functions

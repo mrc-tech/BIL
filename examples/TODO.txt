@@ -1,0 +1,47 @@
+Fare un esempio che fa il "downSample" di una immagine e poi la sfuoca.
+Potrebbe anche essere una nuova forma di arte...? come quello che sfuma i dipinti.
+
+image -> downsample -> blurring -> upsample
+
+questi tre passaggi fatti in maniera esagerata...
+
+mettendo anche delle linee di separazione nere tra i pixels della versione upsampled
+
+______________________________________________________________________________________
+
+Fare dei passaggi di "Blurring" nell'esempio di Delunay??
+
+______________________________________________________________________________________
+
+Fare un esempio che plotta delle funzioni in un piano cartesiano x-y. 
+Farlo con gli assi neri e con la griglia secondaria grigia. Mettere anche i valori sulle tacche del grafico.
+
+Se mi prende il matto faccio anche che gli assi si aggiornano automaticamente sia per li limiti, sia per i "ticks" in base ai dati da plottare (come MatLab ed Excel).
+Dovrei mettere tutto dentro una funzione "plot(vx,vy, color, ...)"
+
+Mettere le routine di plotting dentro una classe potrebbe essere una mossa saggia. In modo tale da modificare il grafico aggiungendo cose con funzioni specializzate.
+Fare in modo che tale classe gestisca anche la dimensione dell'immagine in dimensioni fisiche con la densità di pixels e l'altezza del testo tutto misurato in dimensioni reali (date le dimensioni reali dell'immagine)
+
+potrei fare anche qualche plot di funzioni parametriche carine (come la farfalla e il cuore) per dimostrare le  potenzialità delle routine di plot successive. plot1 è quello più semplice e meno flessibile.
+
+una classe "Plotter" che sfutta una classe "Figure" (non strettamente necessaria) che può essere rasterizzata per creare una "Image". E' importante riuscire a scrivere delle routine che possano modificare le dimensioni del grafico al volo per potersi adattare alle varie label, title e altre cose che potrebbero comprimere il plot.
+
+
+In pratica questo esempio sarebbe il vero motivo per il quale ho cominciato a scrivere questa libreria...
+
+______________________________________________________________________________________
+
+Fare un esempio mettendo insieme tutti i "draw_test" insieme in una grande immagine usando la routine "insertImage"
+
+______________________________________________________________________________________
+
+Fare un programma che (data la stringa che si vuole inserire) genera il QR-code corrispondente
+______________________________________________________________________________________
+
+Fare un programma che usa il "Perlin noise" e il "flood-fill" per generare delle mappe colorate generate randomicamente
+______________________________________________________________________________________
+
+Fare un "Random Walker" come esposto in https://it.khanacademy.org/computing/computer-programming/programming-natural-simulations/programming-noise/a/perlin-noise con il "Perlin noise".
+Farlo che genera un video sarebbe ancora piu` figo....
+______________________________________________________________________________________
+
