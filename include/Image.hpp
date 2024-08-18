@@ -64,7 +64,7 @@ class Image
 		void circ(int centerx,int centery,int radius); //draw a circle
 		void poly(std::vector<int> coords, bool closed); //draw a polyline
 		void bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX, int endPtY,int endControlX, int endControlY); //draw a Bezier curve
-		void text(int x0,int y0, std::string text, std::vector<std::string> font, unsigned scale);
+		void text(int x,int y, std::string text, std::vector<std::string> font, unsigned scale);
 		void ellipse(int centerx, int centery, int a, int b);
 		void insertImage(int x,int y, Image img);
 		
@@ -273,18 +273,18 @@ void Image::bezier(int startPtX,int startPtY,int startControlX,int startControlY
 
 
 
-void Image::text(int x0,int y0, std::string text, std::vector<std::string> font, unsigned scale=1)
+void Image::text(int x,int y, std::string text, std::vector<std::string> font, unsigned scale=1)
 {
 	//prints ASCII chars from 32 (space) to 126 (tilde)
 	int charWidth  = font[0][0];
 	int charHeight = font[0][1];
-	int x=x0, y=y0; // top-right corner of first character
+	int _x=x, _y=y; // top-right corner of first character
 	for(int i=0; i<text.length(); i++){
 		if(text[i] == '\n') {
 			//new line and carriage return
-			x = x0;
-			y0 += charHeight*scale;
-			y = y0;
+			_x = x;
+			y += charHeight*scale;
+			_y = y;
 			continue; //SOLUZIONE LEZZA E TEMPORANEA!! (per non far continuare con i cicli for)
 		}
 		if(text[i]<32 || text[i]>126) continue; //NON MI PIACE MOLTO USARE CONTINUE, MA FORSE E` L'UNICA SOLUZIONE
@@ -293,10 +293,10 @@ void Image::text(int x0,int y0, std::string text, std::vector<std::string> font,
 				if(font[text[i]-' '+1][r*charWidth+c] == '0'){
 					for(int ix=0; ix<scale; ix++)
 					for(int iy=0; iy<scale; iy++)
-					set_pixel(x+c*scale+ix, y+r*scale+iy, _penColor);
+					set_pixel(_x+c*scale+ix, _y+r*scale+iy, _penColor);
 				}
-		x += charWidth*scale;
-		y = y0;
+		_x += charWidth*scale;
+		_y = y;
 	}
 }
 
