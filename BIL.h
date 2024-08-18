@@ -1,8 +1,9 @@
 /****************************************
-Simple Image Library (SIL)
+Basic Image Library (BIL)
 
+2021-2024
 Author:  Andrea Marchi (diescc@gmail.com)
-version: v0.3 (24/08/2021)
+version: v1.0 (19/08/2024)
 ****************************************/
 #ifndef MRC_IMAGE_HPP
 #define MRC_IMAGE_HPP
@@ -12,17 +13,163 @@ version: v0.3 (24/08/2021)
 #include <vector>
 #include <string>
 
-#ifndef MRC_BITMAP
-#define MRC_BITMAP
+
+#ifndef MRC_BASIC_IMAGE
+#define MRC_BASIC_IMAGE
 
 #include <iostream>
 #include <fstream>
-#include <cstring> //for "memset"
 #include <string>
 #include <vector>
 
 
-class Bitmap
+class BasicImage
+{
+	protected:
+		unsigned int _width;
+		unsigned int _height;
+		
+		std::vector<unsigned char> data; // data in array format (array of bytes)
+		
+		unsigned int bytes_per_pixel;
+		unsigned int bytes_per_row;
+		
+		
+	public:
+		BasicImage() : _width(0), _height(0), bytes_per_pixel(3) {}
+		BasicImage(const std::string fileName) : _width(0), _height(0), bytes_per_pixel(0) { load_file(fileName); } // É NECESSARIO CHE SI SETTINO LE VARIABILI INTERNE??? no se lo fa load_file...
+		BasicImage(const unsigned int width, const unsigned int height);
+		
+		//setters / getters:
+		void set_pixel(const unsigned int x, const unsigned int y, const unsigned char red, const unsigned char green, const unsigned char blue);
+		void get_pixel(const unsigned int x, const unsigned int y, unsigned char& red, unsigned char& green, unsigned char& blue) const;
+		inline unsigned int width()  const { return _width;  }
+		inline unsigned int height() const { return _height; }
+		
+		// save and load bitmap files
+		void save_file(std::string fileName, unsigned char quality);
+		void load_file(std::string fileName);
+		
+		
+	protected:
+		//auxiliary functions:
+		template<typename T> inline void write_to_stream(std::ofstream& stream,const T& t) const { stream.write(reinterpret_cast<const char*>(&t),sizeof(T)); }
+		template<typename T> inline void read_from_stream(std::ifstream& stream,T& t) { stream.read(reinterpret_cast<char*>(&t),sizeof(T)); }
+		
+//		inline bool big_endian() const { unsigned int v = 0x01; return (1 != reinterpret_cast<char*>(&v)[0]); }
+//		inline unsigned short flip(const unsigned short& v) const { return ((v >> 8) | (v << 8)); }
+//		inline unsigned int flip(const unsigned int& v) const { return ( ((v & 0xFF000000) >> 0x18) | ((v & 0x000000FF) << 0x18) | ((v & 0x00FF0000) >> 0x08) | ((v & 0x0000FF00) << 0x08) ); }
+		
+};
+
+
+// CONSTANTS =================================================================================================================================
+
+
+
+// DEFINITIONS ================================================================================================================================
+
+
+
+
+BasicImage::BasicImage(const unsigned int width, const unsigned int height)
+: _width(width), _height(height), bytes_per_pixel(3)
+{
+	bytes_per_row = _width * bytes_per_pixel;
+	data.resize(_height * bytes_per_row);
+	std::fill(data.begin(), data.end(), 0x00);
+}
+
+
+
+
+
+
+void BasicImage::set_pixel(const unsigned int x, const unsigned int y, const unsigned char red, const unsigned char green, const unsigned char blue)
+{
+	if( (x<0) || (y<0) || (x>=static_cast<int>(_width)) || (y>=static_cast<int>(_height)) ) return;
+	
+	// Set pixel color in RGB mode
+	const unsigned int y_offset = y * bytes_per_row;
+	const unsigned int x_offset = x * bytes_per_pixel;
+	const unsigned int offset   = y_offset + x_offset;
+	
+	data[offset + 0] = red;
+	data[offset + 1] = green;
+	data[offset + 2] = blue;
+}
+
+
+void BasicImage::get_pixel(const unsigned int x, const unsigned int y, unsigned char& red, unsigned char& green, unsigned char& blue) const
+{
+	if( (x<0) || (y<0) || (x>=static_cast<int>(_width)) || (y>=static_cast<int>(_height)) ) return;
+	
+	// Get pixel color in RGB mode
+	const unsigned int y_offset = y * bytes_per_row;
+	const unsigned int x_offset = x * bytes_per_pixel;
+	const unsigned int offset   = y_offset + x_offset;
+	
+	red   = data[offset + 0];
+	green = data[offset + 1];
+	blue  = data[offset + 2];
+}
+
+
+
+
+
+
+void BasicImage::save_file(std::string fileName, unsigned char quality)
+{
+	// To be overloaded...
+}
+
+
+void BasicImage::load_file(std::string fileName)
+{
+	// To be overloaded...
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// AUXILIARY FUNCTIONS ================================================================================================================================
+
+
+inline std::size_t file_size(const std::string& file_name)
+{
+	std::ifstream file(file_name.c_str(), std::ios::in | std::ios::binary);
+	if (!file) return 0;
+	file.seekg(0, std::ios::end);
+	return static_cast<std::size_t> (file.tellg());
+}
+
+
+
+
+#endif // MRC_BASIC_IMAGE
+
+
+#ifndef MRC_BITMAP
+#define MRC_BITMAP
+
+
+#include <iostream>
+#include <fstream>
+#include <cstring> // for "memset"
+#include <string>
+#include <vector>
+
+
+class Bitmap : public BasicImage
 {
 	public:
 		
@@ -59,36 +206,22 @@ class Bitmap
 		};
 		
 	public:
-		Bitmap() : _width(0), _height(0), bytes_per_pixel(3) {}
-		Bitmap(const std::string fileName) : _width(0), _height(0), bytes_per_pixel(0) { load_file(fileName); } // É NECESSARIO CHE SI SETTINO LE VARIABILI INTERNE??? no se lo fa load_file...
+//		using BasicImage::BasicImage; // inherit constructors (C++11)
+		Bitmap() { _width=0; _height=0; bytes_per_pixel=0; }
+		Bitmap(const std::string fileName) { _width=0; _height=0; bytes_per_pixel=0; load_file(fileName); } // É NECESSARIO CHE SI SETTINO LE VARIABILI INTERNE??? no se lo fa load_file...
 		Bitmap(const unsigned int width, const unsigned int height);
 		
-		//setters / getters:
-		void set_pixel(const unsigned int x, const unsigned int y, const unsigned char red, const unsigned char green, const unsigned char blue);
-		void get_pixel(const unsigned int x, const unsigned int y, unsigned char& red, unsigned char& green, unsigned char& blue) const;
-		inline unsigned int width()  const { return _width;  }
-		inline unsigned int height() const { return _height; }
-		
-		// save and load bitmap files
-		void save_file(std::string fileName);
-		void load_file(std::string fileName);
-		
+		void save_file(std::string fileName); // overload
+		void load_file(std::string fileName); // overload
 		
 	private:
-		unsigned int _width;
-		unsigned int _height;
-		std::vector<unsigned char> data; //data in array format (array of bytes)
-		unsigned int bytes_per_pixel;
-		unsigned int bytes_per_row;
 		bitmap_file_header 			bfh;
 		bitmap_information_header	bih;
 		
-		//auxilioary functions:
+		// auxilioary functions: QUESTE FUNZIONI FORSE SONO SIMILI A QUELLE IN png_utils.h (CONTROLLARE E SISTEMARE!!!!!!!!!!!!!!!)
 		inline bool big_endian() const { unsigned int v = 0x01; return (1 != reinterpret_cast<char*>(&v)[0]); }
 		inline unsigned short flip(const unsigned short& v) const { return ((v >> 8) | (v << 8)); }
 		inline unsigned int flip(const unsigned int& v) const { return ( ((v & 0xFF000000) >> 0x18) | ((v & 0x000000FF) << 0x18) | ((v & 0x00FF0000) >> 0x08) | ((v & 0x0000FF00) << 0x08) ); }
-		template<typename T> inline void read_from_stream(std::ifstream& stream,T& t) { stream.read(reinterpret_cast<char*>(&t),sizeof(T)); }
-		template<typename T> inline void write_to_stream(std::ofstream& stream,const T& t) const { stream.write(reinterpret_cast<const char*>(&t),sizeof(T)); }
 		void read_bfh(std::ifstream& stream, bitmap_file_header& bfh);
 		void write_bfh(std::ofstream& stream, const bitmap_file_header& bfh) const;
 		void read_bih(std::ifstream& stream,bitmap_information_header& bih);
@@ -102,41 +235,14 @@ class Bitmap
 
 
 Bitmap::Bitmap(const unsigned int width, const unsigned int height)
-: _width(width), _height(height), bytes_per_pixel(3)
 {
+	_width = width;
+	_height = height;
+	bytes_per_pixel = 3; // un byte per ogni componente RGB
 	bytes_per_row = _width * bytes_per_pixel;
 	data.resize(_height * bytes_per_row);
 }
 
-
-
-
-
-
-void Bitmap::set_pixel(const unsigned int x, const unsigned int y, const unsigned char red, const unsigned char green, const unsigned char blue)
-{
-	// Set pixel color in BGR mode
-	const unsigned int y_offset = y * bytes_per_row;
-	const unsigned int x_offset = x * bytes_per_pixel;
-	const unsigned int offset   = y_offset + x_offset;
-	
-	data[offset + 0] = blue;
-	data[offset + 1] = green;
-	data[offset + 2] = red;
-}
-
-
-void Bitmap::get_pixel(const unsigned int x, const unsigned int y, unsigned char& red, unsigned char& green, unsigned char& blue) const
-{
-	// Get pixel color in BGR mode
-	const unsigned int y_offset = y * bytes_per_row;
-	const unsigned int x_offset = x * bytes_per_pixel;
-	const unsigned int offset   = y_offset + x_offset;
-	
-	blue  = data[offset + 0];
-	green = data[offset + 1];
-	red   = data[offset + 2];
-}
 
 
 
@@ -366,7 +472,960 @@ std::size_t Bitmap::file_size(const std::string& file_name) const
 
 
 
-#endif
+#endif // MRC_BITMAP
+
+
+
+
+
+
+
+
+/************************************************************
+ZLIB
+
+ToDo:
+ - Mettere tutto dentro una struct? con funzioni private e 
+   pubbliche, in modo tale che è semplice capire l'utilizzo
+   della libreria (ad esempio zlib.deflate() / zlib.inflate())
+***********************************************************/
+#ifndef MRC_ZLIB
+#define MRC_ZLIB
+
+//#include <vector> ?????
+#include <assert.h>
+#include <string.h>
+
+#define HASH_SIZE 16384
+
+//#define STBIW_UCHAR(x) (unsigned char) ((x) & 0xff)
+
+#define stbiw__sbraw(a) ((int *) (void *) (a) - 2)
+#define stbiw__sbm(a)   stbiw__sbraw(a)[0]
+#define stbiw__sbn(a)   stbiw__sbraw(a)[1]
+
+#define stbiw__sbneedgrow(a,n)  ((a)==0 || stbiw__sbn(a)+n >= stbiw__sbm(a))
+#define stbiw__sbmaybegrow(a,n) (stbiw__sbneedgrow(a,(n)) ? stbiw__sbgrow(a,n) : 0)
+#define stbiw__sbgrow(a,n)  stbiw__sbgrowf((void **) &(a), (n), sizeof(*(a)))
+
+#define stbiw__sbpush(a, v)      (stbiw__sbmaybegrow(a,1), (a)[stbiw__sbn(a)++] = (v))
+#define stbiw__sbcount(a)        ((a) ? stbiw__sbn(a) : 0)
+#define stbiw__sbfree(a)         ((a) ? STBIW_FREE(stbiw__sbraw(a)),0 : 0)
+
+#define stbiw__zlib_flush() (out = stbiw__zlib_flushf(out, &bitbuf, &bitcount))
+#define stbiw__zlib_add(code,codebits)  (bitbuf |= (code) << bitcount, bitcount += (codebits), stbiw__zlib_flush())
+// default huffman tables
+#define stbiw__zlib_huffa(b,c)  stbiw__zlib_add(stbiw__zlib_bitrev(b,c),c)
+#define stbiw__zlib_huff1(n)  stbiw__zlib_huffa(0x30 + (n), 8)
+#define stbiw__zlib_huff2(n)  stbiw__zlib_huffa(0x190 + (n)-144, 9)
+#define stbiw__zlib_huff3(n)  stbiw__zlib_huffa(0 + (n)-256,7)
+#define stbiw__zlib_huff4(n)  stbiw__zlib_huffa(0xc0 + (n)-280,8)
+#define stbiw__zlib_huff(n)  ((n) <= 143 ? stbiw__zlib_huff1(n) : (n) <= 255 ? stbiw__zlib_huff2(n) : (n) <= 279 ? stbiw__zlib_huff3(n) : stbiw__zlib_huff4(n))
+#define stbiw__zlib_huffb(n) ((n) <= 143 ? stbiw__zlib_huff1(n) : stbiw__zlib_huff2(n))
+
+#define stbiw__wpng4(o,a,b,c,d) ((o)[0]=(unsigned char)(a & 0xFF),(o)[1]=(unsigned char)(b & 0xFF),(o)[2]=(unsigned char)(c & 0xFF),(o)[3]=(unsigned char)(d & 0xFF),(o)+=4)
+#define stbiw__wp32(data,v) stbiw__wpng4(data, (v)>>24,(v)>>16,(v)>>8,(v));
+#define stbiw__wptag(data,s) stbiw__wpng4(data, s[0],s[1],s[2],s[3])
+
+#define STBIW_REALLOC(p,newsz)  realloc(p,newsz)
+#define STBIW_REALLOC_SIZED(p,oldsz,newsz) STBIW_REALLOC(p,newsz)
+
+static void *stbiw__sbgrowf(void **arr, int increment, int itemsize)
+{
+   int m = *arr ? 2*stbiw__sbm(*arr)+increment : increment+1;
+   void *p = STBIW_REALLOC_SIZED(*arr ? stbiw__sbraw(*arr) : 0, *arr ? (stbiw__sbm(*arr)*itemsize + sizeof(int)*2) : 0, itemsize * m + sizeof(int)*2);
+   assert(p);
+   if (p) {
+      if (!*arr) ((int *) p)[1] = 0;
+      *arr = (void *) ((int *) p + 2);
+      stbiw__sbm(*arr) = m;
+   }
+   return *arr;
+}
+
+
+static unsigned char *stbiw__zlib_flushf(unsigned char *data, unsigned int *bitbuffer, int *bitcount)
+{
+   while (*bitcount >= 8) {
+      stbiw__sbpush(data, (unsigned char)(*bitbuffer & 0xff));
+      *bitbuffer >>= 8;
+      *bitcount -= 8;
+   }
+   return data;
+}
+
+static unsigned int stbiw__zhash(unsigned char *data)
+{
+   unsigned int hash = data[0] + (data[1] << 8) + (data[2] << 16);
+   hash ^= hash << 3;
+   hash += hash >> 5;
+   hash ^= hash << 4;
+   hash += hash >> 17;
+   hash ^= hash << 25;
+   hash += hash >> 6;
+   return hash;
+}
+
+static unsigned int stbiw__zlib_countm(unsigned char *a, unsigned char *b, int limit)
+{
+   int i;
+   for (i=0; i < limit && i < 258; ++i) if (a[i] != b[i]) break;
+   return i;
+}
+
+static int stbiw__zlib_bitrev(int code, int codebits)
+{
+   int res=0;
+   while (codebits--) {
+      res = (res << 1) | (code & 1);
+      code >>= 1;
+   }
+   return res;
+}
+
+
+unsigned int zlib_crc32(unsigned char *buffer, int len)
+{
+	// CRC32B:
+	// Reflected: 0xEDB88320: &1 >> [128] = poly , [ 8] = poly >> 8 VALID
+	// Poly: x^32+x^26+x^23+x^22+x^16+x^12+x^11+x^10+x^8+x^7+x^5+x^4+x^2+x+1 [0xEDB88320]
+	static unsigned int crc_table[256] = {
+		0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
+		0x0eDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91,
+		0x1DB71064, 0x6AB020F2, 0xF3B97148, 0x84BE41DE, 0x1ADAD47D, 0x6DDDE4EB, 0xF4D4B551, 0x83D385C7,
+		0x136C9856, 0x646BA8C0, 0xFD62F97A, 0x8A65C9EC, 0x14015C4F, 0x63066CD9, 0xFA0F3D63, 0x8D080DF5,
+		0x3B6E20C8, 0x4C69105E, 0xD56041E4, 0xA2677172, 0x3C03E4D1, 0x4B04D447, 0xD20D85FD, 0xA50AB56B,
+		0x35B5A8FA, 0x42B2986C, 0xDBBBC9D6, 0xACBCF940, 0x32D86CE3, 0x45DF5C75, 0xDCD60DCF, 0xABD13D59,
+		0x26D930AC, 0x51DE003A, 0xC8D75180, 0xBFD06116, 0x21B4F4B5, 0x56B3C423, 0xCFBA9599, 0xB8BDA50F,
+		0x2802B89E, 0x5F058808, 0xC60CD9B2, 0xB10BE924, 0x2F6F7C87, 0x58684C11, 0xC1611DAB, 0xB6662D3D,
+		0x76DC4190, 0x01DB7106, 0x98D220BC, 0xEFD5102A, 0x71B18589, 0x06B6B51F, 0x9FBFE4A5, 0xE8B8D433,
+		0x7807C9A2, 0x0F00F934, 0x9609A88E, 0xE10E9818, 0x7F6A0DBB, 0x086D3D2D, 0x91646C97, 0xE6635C01,
+		0x6B6B51F4, 0x1C6C6162, 0x856530D8, 0xF262004E, 0x6C0695ED, 0x1B01A57B, 0x8208F4C1, 0xF50FC457,
+		0x65B0D9C6, 0x12B7E950, 0x8BBEB8EA, 0xFCB9887C, 0x62DD1DDF, 0x15DA2D49, 0x8CD37CF3, 0xFBD44C65,
+		0x4DB26158, 0x3AB551CE, 0xA3BC0074, 0xD4BB30E2, 0x4ADFA541, 0x3DD895D7, 0xA4D1C46D, 0xD3D6F4FB,
+		0x4369E96A, 0x346ED9FC, 0xAD678846, 0xDA60B8D0, 0x44042D73, 0x33031DE5, 0xAA0A4C5F, 0xDD0D7CC9,
+		0x5005713C, 0x270241AA, 0xBE0B1010, 0xC90C2086, 0x5768B525, 0x206F85B3, 0xB966D409, 0xCE61E49F,
+		0x5EDEF90E, 0x29D9C998, 0xB0D09822, 0xC7D7A8B4, 0x59B33D17, 0x2EB40D81, 0xB7BD5C3B, 0xC0BA6CAD,
+		0xEDB88320, 0x9ABFB3B6, 0x03B6E20C, 0x74B1D29A, 0xEAD54739, 0x9DD277AF, 0x04DB2615, 0x73DC1683,
+		0xE3630B12, 0x94643B84, 0x0D6D6A3E, 0x7A6A5AA8, 0xE40ECF0B, 0x9309FF9D, 0x0A00AE27, 0x7D079EB1,
+		0xF00F9344, 0x8708A3D2, 0x1E01F268, 0x6906C2FE, 0xF762575D, 0x806567CB, 0x196C3671, 0x6E6B06E7,
+		0xFED41B76, 0x89D32BE0, 0x10DA7A5A, 0x67DD4ACC, 0xF9B9DF6F, 0x8EBEEFF9, 0x17B7BE43, 0x60B08ED5,
+		0xD6D6A3E8, 0xA1D1937E, 0x38D8C2C4, 0x4FDFF252, 0xD1BB67F1, 0xA6BC5767, 0x3FB506DD, 0x48B2364B,
+		0xD80D2BDA, 0xAF0A1B4C, 0x36034AF6, 0x41047A60, 0xDF60EFC3, 0xA867DF55, 0x316E8EEF, 0x4669BE79,
+		0xCB61B38C, 0xBC66831A, 0x256FD2A0, 0x5268E236, 0xCC0C7795, 0xBB0B4703, 0x220216B9, 0x5505262F,
+		0xC5BA3BBE, 0xB2BD0B28, 0x2BB45A92, 0x5CB36A04, 0xC2D7FFA7, 0xB5D0CF31, 0x2CD99E8B, 0x5BDEAE1D,
+		0x9B64C2B0, 0xEC63F226, 0x756AA39C, 0x026D930A, 0x9C0906A9, 0xEB0E363F, 0x72076785, 0x05005713,
+		0x95BF4A82, 0xE2B87A14, 0x7BB12BAE, 0x0CB61B38, 0x92D28E9B, 0xE5D5BE0D, 0x7CDCEFB7, 0x0BDBDF21,
+		0x86D3D2D4, 0xF1D4E242, 0x68DDB3F8, 0x1FDA836E, 0x81BE16CD, 0xF6B9265B, 0x6FB077E1, 0x18B74777,
+		0x88085AE6, 0xFF0F6A70, 0x66063BCA, 0x11010B5C, 0x8F659EFF, 0xF862AE69, 0x616BFFD3, 0x166CCF45,
+		0xA00AE278, 0xD70DD2EE, 0x4E048354, 0x3903B3C2, 0xA7672661, 0xD06016F7, 0x4969474D, 0x3E6E77DB,
+		0xAED16A4A, 0xD9D65ADC, 0x40DF0B66, 0x37D83BF0, 0xA9BCAE53, 0xDEBB9EC5, 0x47B2CF7F, 0x30B5FFE9,
+		0xBDBDF21C, 0xCABAC28A, 0x53B39330, 0x24B4A3A6, 0xBAD03605, 0xCDD70693, 0x54DE5729, 0x23D967BF,
+		0xB3667A2E, 0xC4614AB8, 0x5D681B02, 0x2A6F2B94, 0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
+	};
+	
+	unsigned int crc = ~0u;
+	for(int i=0; i<len; i++) crc = (crc >> 8) ^ crc_table[buffer[i] ^ (crc & 0xFF)];
+	return ~crc;
+}
+
+unsigned zlib_crc32_slow(unsigned char* data, int length)
+{
+	// lento perché ricalcola ogni volta la tabella dal polinomio
+	static unsigned* crcTable;
+	unsigned crc; //32 bit unsigned data
+	unsigned poly = 0xEDB88320; //polynomial
+	if(crcTable == nullptr){
+		crcTable=new unsigned[256];
+		for(unsigned n=0;n<256;n++){
+			crc = n;
+			for(auto k=0;k<8;k++){
+				if((crc & 1) == 1) crc = poly ^ (crc >> 1);
+				else               crc >>= 1;
+			}
+			crcTable[n] = crc;
+		}
+	}
+	crc = ~0u;
+	for(auto i=0; i<length; i++) crc = (crc >> 8) ^ crcTable[data[i] ^ (crc & 0xFF)]; // Reversed
+	return ~crc; //same as c ^ 0xFFFFFFFF
+}
+
+static void stbiw__wpcrc(unsigned char **data, int len)
+{
+   unsigned int crc = zlib_crc32(*data - len - 4, len+4);
+   stbiw__wp32(*data, crc);
+}
+
+static unsigned char stbiw__paeth(int a, int b, int c)
+{
+   int p = a + b - c, pa = abs(p-a), pb = abs(p-b), pc = abs(p-c);
+   if (pa <= pb && pa <= pc) return (unsigned char)(a & 0xFF);
+   if (pb <= pc) return (unsigned char)(b & 0xFF);
+   return (unsigned char)(c & 0xFF);
+}
+
+
+// =================================================================================
+
+
+
+unsigned char * zlib_compress(unsigned char *data, int data_len, int *out_len, int quality)
+{
+	static unsigned short lengthc[]  = { 3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258, 259 };
+	static unsigned char  lengtheb[] = { 0,0,0,0,0,0,0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4,  4,  5,  5,  5,  5,  0 };
+	static unsigned short distc[]    = { 1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577, 32768 };
+	static unsigned char  disteb[]   = { 0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13 };
+	unsigned int bitbuf = 0;
+	int bitcount = 0;
+	unsigned char *out = nullptr;
+//	unsigned char ***hash_table = (unsigned char***) malloc(zlib_ZHASH * sizeof(unsigned char**)); // OLD
+	unsigned char ***hash_table = new unsigned char ** [HASH_SIZE * sizeof(unsigned char**)]; // COME MAI TUTTI QUESTI * ??
+	if (hash_table == nullptr) return nullptr; // return error if it cannot allocate memory
+	if (quality < 5) quality = 5;
+	
+	stbiw__sbpush(out, 0x78);   // DEFLATE 32K window
+	stbiw__sbpush(out, 0x5e);   // FLEVEL = 1
+	stbiw__zlib_add(1,1);  // BFINAL = 1
+	stbiw__zlib_add(1,2);  // BTYPE = 1 -- fixed huffman
+	
+	for(int i=0; i < HASH_SIZE; i++) hash_table[i] = nullptr; // reset the hash_table
+	
+	int count = 0;
+	while (count < data_len-3) {
+		// hash next 3 bytes of data to be compressed
+		int h = stbiw__zhash(data+count)&(HASH_SIZE-1), best=3;
+		unsigned char *bestloc = 0;
+		unsigned char **hlist = hash_table[h];
+		int n = stbiw__sbcount(hlist);
+		for(int j=0; j<n; ++j){
+			if(hlist[j]-data > count-32768) { // if entry lies within window
+				int d = stbiw__zlib_countm(hlist[j], data+count, data_len-count);
+				if(d >= best) { best=d; bestloc=hlist[j]; }
+			}
+		}
+		// when hash table entry is too long, delete half the entries
+		if(hash_table[h] && stbiw__sbn(hash_table[h]) == 2*quality) {
+			memmove(hash_table[h], hash_table[h]+quality, sizeof(hash_table[h][0])*quality);
+			stbiw__sbn(hash_table[h]) = quality;
+		}
+		stbiw__sbpush(hash_table[h],data+count);
+		
+		if(bestloc){
+			// "lazy matching" - check match at *next* byte, and if it's better, do cur byte as literal
+			h = stbiw__zhash(data+count+1)&(HASH_SIZE-1);
+			hlist = hash_table[h];
+			n = stbiw__sbcount(hlist);
+			for(int j=0; j<n; ++j){
+				if(hlist[j]-data > count-32767) {
+					int e = stbiw__zlib_countm(hlist[j], data+count+1, data_len-count-1);
+					if(e > best) { // if next match is better, bail on current match
+						bestloc = nullptr;
+						break;
+					}
+				}
+			}
+		}
+		
+		if(bestloc){
+			int temp;
+			int d = (int) (data+count - bestloc); // distance back
+			assert(d <= 32767 && best <= 258);
+			for(temp=0; best > lengthc[temp+1]-1; ++temp);
+			stbiw__zlib_huff(temp+257); // SCRIVE DOPO IL FOR???
+			if(lengtheb[temp]) stbiw__zlib_add(best - lengthc[temp], lengtheb[temp]);
+			for(temp=0; d > distc[temp+1]-1; ++temp);
+			stbiw__zlib_add(stbiw__zlib_bitrev(temp,5),5);
+			if(disteb[temp]) stbiw__zlib_add(d - distc[temp], disteb[temp]);
+			count += best;
+		}else{
+			stbiw__zlib_huffb(data[count]);
+			count++;
+		}
+	}
+	// write out final bytes
+	for(;count < data_len; ++count) stbiw__zlib_huffb(data[count]);
+	stbiw__zlib_huff(256); // end of block
+	// pad with 0 bits to byte boundary
+	while(bitcount) stbiw__zlib_add(0,1);
+	
+	//clear hash_table from memory
+//	for (int i=0; i<HASH_SIZE; ++i) delete [] hash_table[i];
+	delete [] hash_table;
+	
+	// store uncompressed instead if compression was worse
+	if(stbiw__sbn(out) > data_len + 2 + ((data_len+32766)/32767)*5){
+		stbiw__sbn(out) = 2;  // truncate to DEFLATE 32K window and FLEVEL = 1
+		for(int j = 0; j < data_len;){
+			int blocklen = data_len - j;
+			if(blocklen > 32767) blocklen = 32767;
+			stbiw__sbpush(out, data_len - j == blocklen); // BFINAL = ?, BTYPE = 0 -- no compression
+			stbiw__sbpush(out, (unsigned char)(blocklen & 0xFF)); // LEN
+			stbiw__sbpush(out, (unsigned char)((blocklen >> 8) & 0xFF));
+			stbiw__sbpush(out, (unsigned char)(~blocklen & 0xFF)); // NLEN
+			stbiw__sbpush(out, (unsigned char)((~blocklen >> 8) & 0xFF));
+			memcpy(out+stbiw__sbn(out), data+j, blocklen);
+			stbiw__sbn(out) += blocklen;
+			j += blocklen;
+		}
+	}
+	
+	{
+		// compute adler32 on input
+		unsigned int s1=1, s2=0;
+		int blocklen = (int) (data_len % 5552);
+		count = 0;
+		while (count < data_len) {
+			for (int i=0; i < blocklen; i++) { s1 += data[count+i]; s2 += s1; }
+			s1 %= 65521; s2 %= 65521; // 65521 : largest prime smaller than 65536
+			count += blocklen;
+			blocklen = 5552;
+		}
+		stbiw__sbpush(out, (unsigned char)((s2 >> 8) & 0xFF));
+		stbiw__sbpush(out, (unsigned char)(s2 & 0xFF));
+		stbiw__sbpush(out, (unsigned char)((s1 >> 8) & 0xFF));
+		stbiw__sbpush(out, (unsigned char)(s1 & 0xFF));
+	}
+	
+	*out_len = stbiw__sbn(out);
+	
+	// make returned pointer freeable
+	memmove(stbiw__sbraw(out), out, *out_len);
+	return (unsigned char *) stbiw__sbraw(out);
+}
+
+
+#endif // MRC_ZLIB
+
+
+
+
+
+#ifndef MRC_PNG_UTILS
+#define MRC_PNG_UTILS
+
+
+#include <vector>
+#include <fstream>
+
+
+
+
+// Reverse bits to change endianness
+template <typename T>
+T reverse(T n, unsigned bits_num)
+{
+    T rv = 0;
+REVERSE_BITS:
+    for (int i = 0; i < bits_num; i++)
+    {
+#pragma HLS PIPELINE
+        rv <<= 1;
+        rv |= (n & 0x01);
+        n >>= 1;
+    }
+    return rv;
+}
+// usare sizeof(T) invece di bits_num????
+
+
+
+
+
+
+
+inline std::vector<unsigned char> str2bvec(std::string str)
+{
+	// converte una stringa in un vettore di bytes
+	std::vector<unsigned char> res;
+	for(int i=0; i<str.length(); i++) res.push_back(str[i]);
+	return res;
+}
+
+
+
+
+
+template<typename T>
+inline void write_to_stream(std::ofstream& stream, const std::vector<T>& t)
+{
+	for(auto i=0; i<t.size(); i++)
+		stream.write(reinterpret_cast<const char*>(&t[i]), sizeof(T));
+}
+
+
+
+template<typename T>
+inline void append_to_vector(std::vector<T> &vec, std::vector<T> v)
+{
+	// append the vector v to the vector vec
+	for(auto i=0; i<v.size(); i++)
+		vec.push_back(v[i]);
+}
+
+
+
+inline std::vector<unsigned char> u32bigEndian2vec(int32_t x)
+{
+	// convert a 32 bit integer into a byte vector in Big-Endian notation
+	std::vector<unsigned char> res;
+	
+	res.push_back((x & 0xFF000000) >> 24);
+	res.push_back((x & 0x00FF0000) >> 16);
+	res.push_back((x & 0x0000FF00) >>  8);
+	res.push_back((x & 0x000000FF)      );
+	
+	return res;
+}
+
+
+template<typename T>
+inline std::vector<unsigned char> bigEndian2vec(T x)
+{
+	// convert an integer into a byte vector in Big-Endian notation
+	std::vector<unsigned char> res;
+	
+	if(sizeof(T) == 1){
+		// 8 bit input
+		res.push_back(x);
+	}else
+	if(sizeof(T) == 2){
+		// 16 bit input
+		res.push_back((x & 0xFF00) >> 8);
+		res.push_back((x & 0x00FF)     );
+	}else
+	if(sizeof(T) == 4){
+		// 32 bit input
+		res.push_back((x & 0xFF000000) >> 24);
+		res.push_back((x & 0x00FF0000) >> 16);
+		res.push_back((x & 0x0000FF00) >>  8);
+		res.push_back((x & 0x000000FF)      );
+	}else
+	if(sizeof(T) == 8){
+		// 64 bit input
+		res.push_back((x & 0xFF00000000000000) >> 56);
+		res.push_back((x & 0x00FF000000000000) >> 48);
+		res.push_back((x & 0x0000FF0000000000) >> 40);
+		res.push_back((x & 0x000000FF00000000) >> 32);
+		res.push_back((x & 0x00000000FF000000) >> 24);
+		res.push_back((x & 0x0000000000FF0000) >> 16);
+		res.push_back((x & 0x000000000000FF00) >>  8);
+		res.push_back((x & 0x00000000000000FF)      );
+	}
+	
+	
+	return res;
+}
+
+
+#endif // MRC_PNG_UTILS
+
+
+
+
+
+/****************************************************
+                     PNG image
+
+ToDo:
+ - forse dovrei mettere le funzioni di calcolo del
+   CRC32B nella libreria "zlib"
+ - 
+
+****************************************************/
+#ifndef MRC_PNG_IMAGE
+#define MRC_PNG_IMAGE
+
+
+#include <iostream> // TEMPORANEO, PER IL DEBUG!!!!!!!!!!!!!!
+
+#define CHUNK 32768 // 32 Kb
+
+class PNGimage : public BasicImage
+{
+	public:
+		using BasicImage::BasicImage; // inherit constructors (C++11)
+		
+		// save and load bitmap files
+		void save_file(std::string fileName, int stride_bytes);
+		void load_file(std::string fileName);
+		
+		
+	private:
+		//auxiliary functions:
+		void write_chunk(std::ofstream& stream, std::vector<unsigned char> data, std::string type);
+		unsigned int crc32(unsigned char *buffer, int len);
+		
+		void encode_png_line(int y, int stride_bytes, int filter_type, signed char *line_buffer);
+};
+
+
+// CONSTANTS =================================================================================================================================
+
+
+
+// DEFINITIONS ================================================================================================================================
+
+
+
+
+
+void PNGimage::save_file(std::string fileName, int stride_bytes=0) // NON SO CHE COSA SERVE stride_bytes
+{
+	std::ofstream file(fileName, std::ios::binary);
+	
+	// 1) writes file header:
+	unsigned char sig[8] = { 0x89,'P','N','G',0x0D,0x0A,0x1A,0x0A }; // header starting combination (8-byte signature)
+	write_to_stream(file, sig);
+	
+	// 2) "CHUNKS":
+	
+	// 2.1) Image Header "IHDR" chunk (13 data bytes total):
+	std::vector<unsigned char> temp;
+//	temp.push_back((_width &0xFF000000)>>24); temp.push_back((_width &0x00FF0000)>>16); temp.push_back((_width &0x0000FF00)>>8); temp.push_back((_width &0x000000FF)); //image Width  (Big-Endian)
+//	temp.push_back((_height&0xFF000000)>>24); temp.push_back((_height&0x00FF0000)>>16); temp.push_back((_height&0x0000FF00)>>8); temp.push_back((_height&0x000000FF)); //image Height (Big-Endian)
+	append_to_vector(temp, bigEndian2vec(_width)); // image Width (Big-Endian)
+	append_to_vector(temp, bigEndian2vec(_height)); // image Height (Big-Endian)
+	temp.push_back(8); // bit depth (1 byte, values 1, 2, 4, 8, or 16)
+	temp.push_back(2); // color type (1 byte, values 0:grayscale, 2:RGB, 3:indexed(palette), 4:grayscale&alpha, or 6:RGBA)
+	temp.push_back(0); // compression method (1 byte, value 0)
+	temp.push_back(0); // filter method (1 byte, value 0)
+	temp.push_back(0); // interlace method (1 byte, values 0 "no interlace" or 1 "Adam7 interlace")
+	
+	write_chunk(file, temp, "IHDR");
+	
+	// 2.2) Data "IDAT" chunk:
+	temp.clear();
+//	write_chunk(file, {0x08, 0xD7, 0x63, 0xF8, 0xCF, 0xC0, 0x00, 0x00, 0x03, 0x01, 0x01, 0x00}, "IDAT"); // hardcoded red single pixel (ci sta il canale alpha all'inizio??)
+	/*
+	{0x08,     0xD7,     0x63,     0xF8,     0xCF,     0xC0,     0x00,     0x00,     0x03,     0x01,     0x01,     0x00    }
+	{00001000, 11010111, 01100011, 11111000, 11001111, 11000000, 00000000, 00000000, 00000011, 00000001, 00000001, 00000000}
+	*/
+	
+	//#################################################################################################################################################
+	
+	for(int i=0; i<data.size(); i+=_width*3+1) data.insert(data.begin() + i, 0); // aggiunge all'inizio di ogni scanline il filtro usato (00)
+	
+	unsigned error = 0;
+	int zlibsize = 0;
+	
+	unsigned char *pollo, *temp2;
+	pollo = (unsigned char*)malloc(data.size());
+	for(size_t i=0; i<data.size(); i++) pollo[i] = data[i];
+
+	temp2 = zlib_compress(pollo, data.size(), &zlibsize, 1);
+	
+	for(size_t i=0; i<zlibsize; i++) temp.push_back(temp2[i]); // copia i dati compressi da temp2 a temp (da puntatore a vector)
+//	for(size_t i=0; i<zlibsize; i++) std::cout << std::hex << (int)temp2[i] << " "; std::cout << std::endl;
+//	for(auto x : temp) std::cout << std::hex << (int)x << " "; std::cout << std::endl;
+	
+	free(pollo);
+	free(temp2);
+	
+	//#################################################################################################################################################
+	
+//	char b[10000];
+//	// zlib struct
+//    z_stream defstream;
+//    defstream.zalloc = Z_NULL;
+//    defstream.zfree = Z_NULL;
+//    defstream.opaque = Z_NULL;
+//    // setup "a" as the input and "b" as the compressed output
+//    defstream.avail_in = (uInt)_width; // size of input
+//    defstream.avail_out = (uInt)sizeof(b); // size of output
+//    
+//    for(auto scanline=0; scanline<_height; scanline++){
+//		defstream.next_in = (Bytef *)&data[_width*scanline]; // input char array
+////		defstream.next_in = (Bytef *)data.data(); // input char array
+//		defstream.next_out = (Bytef *)b; // output char array
+//		// the actual compression work.
+//		deflateInit(&defstream, Z_BEST_COMPRESSION);
+//		deflate(&defstream, Z_FINISH);
+//		deflateEnd(&defstream);
+//		// update the vector
+//		for(auto i=0; i<strlen(b); i++) temp.push_back(b[i]);
+//	}
+//	write_chunk(file, temp, "IDAT");
+
+	//#################################################################################################################################################
+
+
+	write_chunk(file, temp, "IDAT");
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	// 2.3) Image End chunk (0 length):
+	temp.clear();
+	write_chunk(file, temp, "IEND");
+	
+	
+	
+	
+	
+	
+
+
+
+
+	
+	
+
+
+
+	
+//STBIWDEF unsigned char *stbi_write_png_to_mem(
+//const unsigned char *pixels, // DATA
+//int stride_bytes, // CHE COS'E`???
+//int x, 			// width
+//int y,			// height
+//int n, 			// bytes_per_pixel
+//int *out_len)
+	
+//	int stbi_write_png_compression_level = 8; // NON CAMBIA????
+//	int stbi_write_force_png_filter = -1; // A COSA SERVE?????
+//	
+//	int force_filter = stbi_write_force_png_filter;
+//	int ctype[5] = { -1, 0, 4, 2, 6 };
+//	unsigned char *out,*o, *filt, *zlib;
+//	signed char *line_buffer;
+//	int zlen;
+//	
+//	if(stride_bytes == 0) stride_bytes = bytes_per_row;
+//	if(force_filter >= 5) force_filter = -1;
+//	
+//	filt = new unsigned char[(bytes_per_row+1) * _height]; if (!filt) { file.close(); return;}
+//	line_buffer = new signed char[bytes_per_row]; if (!line_buffer) { delete [] filt; file.close(); return; }
+//	for(int j=0; j<_height; j++){
+//		int filter_type;
+//		if(force_filter > -1){
+//			filter_type = force_filter;
+//			encode_png_line(j, stride_bytes, force_filter, line_buffer);
+//		}else{ // Estimate the best filter by running through all of them:
+//			int best_filter = 0, best_filter_val = 0x7FFFFFFF, est;
+//			for(filter_type = 0; filter_type < 5; filter_type++){
+//				encode_png_line(j, stride_bytes, force_filter, line_buffer);
+//				// Estimate the entropy of the line using this filter; the less, the better.
+//				est = 0;
+//				for(int i=0; i<bytes_per_row; i++) est += abs((signed char) line_buffer[i]);
+//				if(est < best_filter_val){
+//					best_filter_val = est;
+//					best_filter = filter_type;
+//				}
+//			}
+//			if(filter_type != best_filter) {  // If the last iteration already got us the best filter, don't redo it
+//				encode_png_line(j, stride_bytes, force_filter, line_buffer);
+//				filter_type = best_filter;
+//			}
+//		}
+//		// when we get here, filter_type contains the filter type, and line_buffer contains the data
+//		filt[j*(bytes_per_row+1)] = (unsigned char) filter_type;
+//		memmove(filt+j*(bytes_per_row+1)+1, line_buffer, bytes_per_row);
+//	}
+//	delete [] line_buffer;
+//	zlib = zlib_compress(filt, _height*(bytes_per_row+1), &zlen, stbi_write_png_compression_level);
+//	delete [] filt;
+//	if(!zlib) { file.close(); return; }
+//	
+//	// each tag requires 12 bytes of overhead
+//	out = new unsigned char[8 + 12+13 + 12+zlen + 12];
+//	if (!out) { file.close(); return; }
+////	*out_len = 8 + 12+13 + 12+zlen + 12;
+//	
+//	o=out;
+////	memmove(o,sig,8); o+= 8;
+//	
+//	stbiw__wp32(o, 13); // header length
+//		write_to_stream(file, *o); o=out;
+////	stbiw__wptag(o, "IHDR");
+//	write_to_stream(file, "IHDR");
+//	stbiw__wp32(o, _width);
+//		write_to_stream(file, *o); o=out;
+//	stbiw__wp32(o, _height);
+//		write_to_stream(file, *o); o=out;
+////	*o++ = 8;
+//	write_to_stream(file, 8);
+////	*o++ = (unsigned char)(ctype[bytes_per_pixel] & 0xFF);
+//	write_to_stream(file, (unsigned char)(ctype[bytes_per_pixel] & 0xFF));
+////	*o++ = 0;
+////	*o++ = 0;
+////	*o++ = 0;
+//	write_to_stream(file, (unsigned char)0);
+//	write_to_stream(file, (unsigned char)0);
+//	write_to_stream(file, (unsigned char)0);
+//	stbiw__wpcrc(&o,13);
+//		write_to_stream(file, *o); o=out;
+//	
+//	stbiw__wp32(o, zlen);
+//		write_to_stream(file, *o); o=out;
+////	stbiw__wptag(o, "IDAT");
+//	write_to_stream(file, "IDAT");
+//	memmove(o, zlib, zlen); o += zlen;
+//		write_to_stream(file, *o); o=out;
+//	delete [] zlib;
+//	stbiw__wpcrc(&o, zlen);
+//		write_to_stream(file, *o); o=out;
+//	
+//	stbiw__wp32(o,0);
+//		write_to_stream(file, *o); o=out;
+////	stbiw__wptag(o, "IEND");
+//	write_to_stream(file, "IEND");
+//	stbiw__wpcrc(&o,0);
+//		write_to_stream(file, *o); o=out;
+//	
+////	STBIW_ASSERT(o == out + *out_len);
+	
+	file.close();
+}
+
+
+void PNGimage::load_file(std::string fileName)
+{
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+// AUXILIARY FUNCTIONS ================================================================================================================================
+
+
+// @OPTIMIZE: provide an option that always forces left-predict or paeth predict
+//void PNGimage::encode_png_line(int y, int stride_bytes, int filter_type, signed char *line_buffer)
+//{
+//	unsigned char * pixels = new unsigned char[data.size()];
+//	for(int i=0; i<data.size(); i++) pixels[i] = data[i];
+//	static int stbi__flip_vertically_on_write = 0;
+//   static int mapping[]  = { 0,1,2,3,4 };
+//   static int firstmap[] = { 0,1,0,5,6 };
+//   int *mymap = (y != 0) ? mapping : firstmap;
+//   int i;
+//   int type = mymap[filter_type];
+//   unsigned char *z = pixels + stride_bytes * (stbi__flip_vertically_on_write ? _height-1-y : y);
+////   unsigned char *z = (unsigned char*)data[stride_bytes * (stbi__flip_vertically_on_write ? _height-1-y : y)]; // NON FUNZIONA
+//   int signed_stride = stbi__flip_vertically_on_write ? -stride_bytes : stride_bytes;
+//
+//   if (type==0) {
+//      memcpy(line_buffer, z, bytes_per_row);
+//      return;
+//   }
+//
+//   // first loop isn't optimized since it's just one pixel
+//   for (i = 0; i < bytes_per_pixel; ++i) {
+//      switch (type) {
+//         case 1: line_buffer[i] = z[i]; break;
+//         case 2: line_buffer[i] = z[i] - z[i-signed_stride]; break;
+//         case 3: line_buffer[i] = z[i] - (z[i-signed_stride]>>1); break;
+//         case 4: line_buffer[i] = (signed char) (z[i] - stbiw__paeth(0,z[i-signed_stride],0)); break;
+//         case 5: line_buffer[i] = z[i]; break;
+//         case 6: line_buffer[i] = z[i]; break;
+//      }
+//   }
+//   switch (type) {
+//      case 1: for (i=bytes_per_pixel; i < bytes_per_row; ++i) line_buffer[i] = z[i] - z[i-bytes_per_pixel]; break;
+//      case 2: for (i=bytes_per_pixel; i < bytes_per_row; ++i) line_buffer[i] = z[i] - z[i-signed_stride]; break;
+//      case 3: for (i=bytes_per_pixel; i < bytes_per_row; ++i) line_buffer[i] = z[i] - ((z[i-bytes_per_pixel] + z[i-signed_stride])>>1); break;
+//      case 4: for (i=bytes_per_pixel; i < bytes_per_row; ++i) line_buffer[i] = z[i] - stbiw__paeth(z[i-bytes_per_pixel], z[i-signed_stride], z[i-signed_stride-bytes_per_pixel]); break;
+//      case 5: for (i=bytes_per_pixel; i < bytes_per_row; ++i) line_buffer[i] = z[i] - (z[i-bytes_per_pixel]>>1); break;
+//      case 6: for (i=bytes_per_pixel; i < bytes_per_row; ++i) line_buffer[i] = z[i] - stbiw__paeth(z[i-bytes_per_pixel], 0,0); break;
+//   }
+//}
+
+
+
+
+
+void PNGimage::write_chunk(std::ofstream& stream, std::vector<unsigned char> data, std::string type)
+{
+	unsigned length = data.size(); //length of chunk (4 bytes [32 bits])
+	char chunk_type[4] = {type[0],type[1],type[2],type[3]};
+	
+	write_to_stream(stream, _byteswap_ulong(length)); //writes length of chunk (4 bytes Big-Endian)
+	write_to_stream(stream, chunk_type); //writes the chunk type (4 bytes)
+	
+	for(auto i=0; i<length; i++){
+		write_to_stream(stream, data[i]); //write data to stream (byte per byte)
+	}
+	
+	unsigned char* buf = new unsigned char[4+length]; //CRC32B of chunk_type (4 bytes) and data (length bytes)
+	for(int i=0; i<4; i++) buf[i] = chunk_type[i];
+	for(int i=0; i<length; i++) buf[i+4] = data[i];
+	
+	write_to_stream(stream, _byteswap_ulong(crc32(buf,length+4))); //write CRC32 in Big-Endian
+}
+
+
+unsigned int PNGimage::crc32(unsigned char *buffer, int len)
+{
+	// CRC32B:
+	// Reflected: 0xEDB88320: &1 >> [128] = poly , [ 8] = poly >> 8 VALID
+	// Poly: x^32+x^26+x^23+x^22+x^16+x^12+x^11+x^10+x^8+x^7+x^5+x^4+x^2+x+1
+	static unsigned int crc_table[256] = {
+		0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
+		0x0eDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91,
+		0x1DB71064, 0x6AB020F2, 0xF3B97148, 0x84BE41DE, 0x1ADAD47D, 0x6DDDE4EB, 0xF4D4B551, 0x83D385C7,
+		0x136C9856, 0x646BA8C0, 0xFD62F97A, 0x8A65C9EC, 0x14015C4F, 0x63066CD9, 0xFA0F3D63, 0x8D080DF5,
+		0x3B6E20C8, 0x4C69105E, 0xD56041E4, 0xA2677172, 0x3C03E4D1, 0x4B04D447, 0xD20D85FD, 0xA50AB56B,
+		0x35B5A8FA, 0x42B2986C, 0xDBBBC9D6, 0xACBCF940, 0x32D86CE3, 0x45DF5C75, 0xDCD60DCF, 0xABD13D59,
+		0x26D930AC, 0x51DE003A, 0xC8D75180, 0xBFD06116, 0x21B4F4B5, 0x56B3C423, 0xCFBA9599, 0xB8BDA50F,
+		0x2802B89E, 0x5F058808, 0xC60CD9B2, 0xB10BE924, 0x2F6F7C87, 0x58684C11, 0xC1611DAB, 0xB6662D3D,
+		0x76DC4190, 0x01DB7106, 0x98D220BC, 0xEFD5102A, 0x71B18589, 0x06B6B51F, 0x9FBFE4A5, 0xE8B8D433,
+		0x7807C9A2, 0x0F00F934, 0x9609A88E, 0xE10E9818, 0x7F6A0DBB, 0x086D3D2D, 0x91646C97, 0xE6635C01,
+		0x6B6B51F4, 0x1C6C6162, 0x856530D8, 0xF262004E, 0x6C0695ED, 0x1B01A57B, 0x8208F4C1, 0xF50FC457,
+		0x65B0D9C6, 0x12B7E950, 0x8BBEB8EA, 0xFCB9887C, 0x62DD1DDF, 0x15DA2D49, 0x8CD37CF3, 0xFBD44C65,
+		0x4DB26158, 0x3AB551CE, 0xA3BC0074, 0xD4BB30E2, 0x4ADFA541, 0x3DD895D7, 0xA4D1C46D, 0xD3D6F4FB,
+		0x4369E96A, 0x346ED9FC, 0xAD678846, 0xDA60B8D0, 0x44042D73, 0x33031DE5, 0xAA0A4C5F, 0xDD0D7CC9,
+		0x5005713C, 0x270241AA, 0xBE0B1010, 0xC90C2086, 0x5768B525, 0x206F85B3, 0xB966D409, 0xCE61E49F,
+		0x5EDEF90E, 0x29D9C998, 0xB0D09822, 0xC7D7A8B4, 0x59B33D17, 0x2EB40D81, 0xB7BD5C3B, 0xC0BA6CAD,
+		0xEDB88320, 0x9ABFB3B6, 0x03B6E20C, 0x74B1D29A, 0xEAD54739, 0x9DD277AF, 0x04DB2615, 0x73DC1683,
+		0xE3630B12, 0x94643B84, 0x0D6D6A3E, 0x7A6A5AA8, 0xE40ECF0B, 0x9309FF9D, 0x0A00AE27, 0x7D079EB1,
+		0xF00F9344, 0x8708A3D2, 0x1E01F268, 0x6906C2FE, 0xF762575D, 0x806567CB, 0x196C3671, 0x6E6B06E7,
+		0xFED41B76, 0x89D32BE0, 0x10DA7A5A, 0x67DD4ACC, 0xF9B9DF6F, 0x8EBEEFF9, 0x17B7BE43, 0x60B08ED5,
+		0xD6D6A3E8, 0xA1D1937E, 0x38D8C2C4, 0x4FDFF252, 0xD1BB67F1, 0xA6BC5767, 0x3FB506DD, 0x48B2364B,
+		0xD80D2BDA, 0xAF0A1B4C, 0x36034AF6, 0x41047A60, 0xDF60EFC3, 0xA867DF55, 0x316E8EEF, 0x4669BE79,
+		0xCB61B38C, 0xBC66831A, 0x256FD2A0, 0x5268E236, 0xCC0C7795, 0xBB0B4703, 0x220216B9, 0x5505262F,
+		0xC5BA3BBE, 0xB2BD0B28, 0x2BB45A92, 0x5CB36A04, 0xC2D7FFA7, 0xB5D0CF31, 0x2CD99E8B, 0x5BDEAE1D,
+		0x9B64C2B0, 0xEC63F226, 0x756AA39C, 0x026D930A, 0x9C0906A9, 0xEB0E363F, 0x72076785, 0x05005713,
+		0x95BF4A82, 0xE2B87A14, 0x7BB12BAE, 0x0CB61B38, 0x92D28E9B, 0xE5D5BE0D, 0x7CDCEFB7, 0x0BDBDF21,
+		0x86D3D2D4, 0xF1D4E242, 0x68DDB3F8, 0x1FDA836E, 0x81BE16CD, 0xF6B9265B, 0x6FB077E1, 0x18B74777,
+		0x88085AE6, 0xFF0F6A70, 0x66063BCA, 0x11010B5C, 0x8F659EFF, 0xF862AE69, 0x616BFFD3, 0x166CCF45,
+		0xA00AE278, 0xD70DD2EE, 0x4E048354, 0x3903B3C2, 0xA7672661, 0xD06016F7, 0x4969474D, 0x3E6E77DB,
+		0xAED16A4A, 0xD9D65ADC, 0x40DF0B66, 0x37D83BF0, 0xA9BCAE53, 0xDEBB9EC5, 0x47B2CF7F, 0x30B5FFE9,
+		0xBDBDF21C, 0xCABAC28A, 0x53B39330, 0x24B4A3A6, 0xBAD03605, 0xCDD70693, 0x54DE5729, 0x23D967BF,
+		0xB3667A2E, 0xC4614AB8, 0x5D681B02, 0x2A6F2B94, 0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
+	};
+	
+	unsigned int crc = ~0u;
+	for(int i=0; i<len; i++) crc = (crc >> 8) ^ crc_table[buffer[i] ^ (crc & 0xff)];
+	return ~crc;
+}
+
+
+//unsigned crc32(unsigned char* data, int length)
+//{
+//	static unsigned* crcTable;
+//	unsigned crc; //32 bit unsigned data
+//	unsigned poly = 0xEDB88320; //polynomial
+//	if(crcTable == nullptr){
+//		crcTable=new unsigned[256];
+//		for(unsigned n=0;n<256;n++){
+//			crc = n;
+//			for(auto k=0;k<8;k++){
+//				if((crc & 1) == 1) crc = poly ^ (crc >> 1);
+//				else               crc >>= 1;
+//			}
+//			crcTable[n] = crc;
+//		}
+//	}
+//	crc = ~0u;
+//	for(auto i=0; i<length; i++) crc = (crc >> 8) ^ crcTable[data[i] ^ (crc & 0xFF)];
+//	return ~crc; //same as c ^ 0xFFFFFFFF
+//}
+
+
+
+
+
+
+
+
+
+
+// PNG SPECIFICATION ================================================================================================================================
+
+
+/*****************************************************************************************
+Color Type and Allowed Bit Depth:
+   Color    Allowed    Interpretation
+   Type    Bit Depths
+   
+   0       1,2,4,8,16  Each pixel is a grayscale sample.
+   2       8,16        Each pixel is an R,G,B triple.
+   3       1,2,4,8     Each pixel is a palette index; a PLTE chunk must appear.
+   4       8,16        Each pixel is a grayscale sample, followed by an alpha sample.
+   6       8,16        Each pixel is an R,G,B triple, followed by an alpha sample.
+******************************************************************************************/
+
+/******************************************************************************************
+Critical chunks:
+    IHDR	must be the first chunk; it contains (in this order) the image's width (4 bytes);
+			height (4 bytes); bit depth (1 byte, values 1, 2, 4, 8, or 16); 
+			color type (1 byte, values 0, 2, 3, 4, or 6); compression method (1 byte, value 0); 
+			filter method (1 byte, value 0); 
+			and interlace method (1 byte, values 0 "no interlace" or 1 "Adam7 interlace") 
+			(13 data bytes total).
+    PLTE	contains the palette: a list of colors. The PLTE chunk is essential for color 
+			type 3 (indexed color). It is optional for color types 2 and 6 (truecolor and 
+			truecolor with alpha) and it must not appear for color types 0 and 4 (grayscale 
+			and grayscale with alpha).
+    IDAT	contains the image, which may be split among multiple IDAT chunks. Such splitting 
+			increases filesize slightly, but makes it possible to generate a PNG in a streaming 
+			manner. The IDAT chunk contains the actual image data, which is the output stream 
+			of the compression algorithm.
+    IEND	marks the image end; the data field of the IEND chunk has 0 bytes/is empty.
+
+Ancillary chunks:
+    bKGD	gives the default background color. It is intended for use when there is no better 
+			choice available, such as in standalone image viewers (but not web browsers; see 
+			below for more details).
+    cHRM 	gives the chromaticity coordinates of the display primaries and white point.
+    dSIG 	is for storing digital signatures.
+    eXIf 	stores Exif metadata.
+    gAMA 	specifies gamma. The gAMA chunk contains only 4 bytes, and its value represents 
+			the gamma value multiplied by 100,000; for example, 
+			the gamma value 1/3.4 calculates to 29411.7647059 ((1/3.4)*(100,000)) and is 
+			converted to an integer (29412) for storage.
+    hIST 	can store the histogram, or total amount of each color in the image.
+    iCCP 	is an ICC color profile.
+    iTXt 	contains a keyword and UTF-8 text, with encodings for possible compression and 
+			translations marked with language tag. The Extensible Metadata Platform (XMP) uses 
+			this chunk with a keyword 'XML:com.adobe.xmp'
+    pHYs 	holds the intended pixel size (or pixel aspect ratio); the pHYs contains "Pixels 
+			per unit, X axis" (4 bytes), "Pixels per unit, Y axis" (4 bytes), and "Unit specifier" 
+			(1 byte) for a total of 9 bytes.[22]
+    sBIT 	(significant bits) indicates the color-accuracy of the source data; this chunk 
+			contains a total of between 1 and 13 bytes.
+    sPLT 	suggests a palette to use if the full range of colors is unavailable.
+    sRGB 	indicates that the standard sRGB color space is used; the sRGB chunk contains 
+			only 1 byte, which is used for "rendering intent" (4 values—0, 1, 2, and 3—are 
+			defined for rendering intent).
+    sTER 	stereo-image indicator chunk for stereoscopic images.
+    tEXt 	can store text that can be represented in ISO/IEC 8859-1, with one key-value pair 
+			for each chunk. The "key" must be between 1 and 79 characters long. Separator 
+			is a null character. The "value" can be any length, including zero up to the maximum 
+			permissible chunk size minus the length of the keyword and separator. Neither "key" nor 
+			"value" can contain null character. Leading or trailing spaces are also disallowed.
+    tIME 	stores the time that the image was last changed.
+    tRNS 	contains transparency information. For indexed images, it stores alpha channel values 
+			for one or more palette entries. For truecolor and grayscale images, it stores a single 
+			pixel value that is to be regarded as fully transparent.
+    zTXt 	contains compressed text (and a compression method marker) with the same limits as tEXt.
+
+The lowercase first letter in these chunks indicates that they are not needed for the PNG specification. 
+The lowercase last letter in some chunks indicates that they are safe to copy, even if the application 
+concerned does not understand them. 
+
+****************************************************************************************************/
+
+
+
+#endif // MRC_PNG_IMAGE
 
 typedef  unsigned int   uint;
 typedef  unsigned char  byte;
@@ -416,15 +1475,18 @@ class Image
 		void circ(int centerx,int centery,int radius); //draw a circle
 		void poly(std::vector<int> coords, bool closed); //draw a polyline
 		void bezier(int startPtX,int startPtY,int startControlX,int startControlY,int endPtX, int endPtY,int endControlX, int endControlY); //draw a Bezier curve
-		void text(int x0,int y0, std::string text, std::vector<std::string> font);
+		void text(int x,int y, std::string text, std::vector<std::string> font, unsigned scale);
 		void ellipse(int centerx, int centery, int a, int b);
 		void insertImage(int x,int y, Image img);
+		void fillrect(int x0,int y0, int x1,int y1);
 		
 		inline void penColor(const byte& R,const byte& G,const byte& B) { _penColor = {R,G,B}; }
+		inline void penColor(const color& c) { _penColor = c; }
 		inline void penWidth(const uint& width) { _penWidth = width; }
 		
 		//saveFile:
 		void save_bmp(const std::string& fileName) const;
+		void save_png(const std::string& fileName) const; // DA METTERE ENTRAMBI IN UN UNICO METODO CHE VEDE L'ESTENSIONE...!!!!!!!!!!!!
 		
 		//loadFile:
 		void load_bmp(const std::string& fileName);
@@ -461,6 +1523,18 @@ void Image::save_bmp(const std::string& fileName) const
 }
 
 
+void Image::save_png(const std::string& fileName) const
+{
+	PNGimage image(W, H);
+	
+	for(uint y=0; y<H; y++)
+		for(uint x=0; x<W; x++)
+			image.set_pixel(x,y, data[y*W+x].R, data[y*W+x].G, data[y*W+x].B);
+	
+	image.save_file(fileName);
+}
+
+
 
 
 void Image::load_bmp(const std::string& fileName)
@@ -480,6 +1554,10 @@ void Image::load_bmp(const std::string& fileName)
 			this->set_pixel(x,y, {R,G,B});
 		}
 }
+
+
+
+
 
 
 
@@ -509,6 +1587,34 @@ void Image::drawPoint(int x, int y)
 				set_pixel(x  ,y+1, _penColor);
 				set_pixel(x-1,y+1, _penColor);
 				set_pixel(x+1,y+1, _penColor);
+				}
+				break;
+		case 5: {
+				set_pixel(x-1,y-2, _penColor);
+				set_pixel(x  ,y-2, _penColor);
+				set_pixel(x+1,y-2, _penColor);
+				
+				set_pixel(x-2,y-1, _penColor);
+				set_pixel(x-1,y-1, _penColor);
+				set_pixel(x  ,y-1, _penColor);
+				set_pixel(x+1,y-1, _penColor);
+				set_pixel(x+2,y-1, _penColor);
+				
+				set_pixel(x-2,y  , _penColor);
+				set_pixel(x-1,y  , _penColor);
+				set_pixel(x  ,y  , _penColor);
+				set_pixel(x+1,y  , _penColor);
+				set_pixel(x+2,y  , _penColor);
+				
+				set_pixel(x-2,y+1, _penColor);
+				set_pixel(x-1,y+1, _penColor);
+				set_pixel(x  ,y+1, _penColor);
+				set_pixel(x+1,y+1, _penColor);
+				set_pixel(x+2,y+1, _penColor);
+				
+				set_pixel(x-1,y+2, _penColor);
+				set_pixel(x  ,y+2, _penColor);
+				set_pixel(x+1,y+2, _penColor);
 				}
 				break;
 		default: set_pixel(x,y, _penColor); break;
@@ -555,6 +1661,15 @@ void Image::rect(int x0,int y0,int x1,int y1)
 	line(x0,y0,x0,y1);
 	line(x1,y1,x1,y0);
 	line(x1,y1,x0,y1);
+}
+
+void Image::fillrect(int x0,int y0,int x1,int y1)
+{
+	line(x0,y0,x1,y0);
+	line(x0,y0,x0,y1);
+	line(x1,y1,x1,y0);
+	line(x1,y1,x0,y1);
+	for(int i=(y0<y1?y0:y1); i<=(y0>y1?y0:y1); i++) line(x0,i,x1,i);
 }
 
 void Image::circ(int centerx, int centery, int radius)
@@ -607,24 +1722,30 @@ void Image::bezier(int startPtX,int startPtY,int startControlX,int startControlY
 
 
 
-void Image::text(int x0,int y0, std::string text, std::vector<std::string> font)
+void Image::text(int x,int y, std::string text, std::vector<std::string> font, unsigned scale=1)
 {
 	//prints ASCII chars from 32 (space) to 126 (tilde)
 	int charWidth  = font[0][0];
 	int charHeight = font[0][1];
-	int x=x0, y=y0; // top-right corner of first character
+	int _x=x, _y=y; // top-right corner of first character
 	for(int i=0; i<text.length(); i++){
 		if(text[i] == '\n') {
 			//new line and carriage return
-			x = x0;
-			y0 += charHeight;
-			y = y0;
+			_x = x;
+			y += charHeight*scale;
+			_y = y;
 			continue; //SOLUZIONE LEZZA E TEMPORANEA!! (per non far continuare con i cicli for)
 		}
 		if(text[i]<32 || text[i]>126) continue; //NON MI PIACE MOLTO USARE CONTINUE, MA FORSE E` L'UNICA SOLUZIONE
-		for(int r=0; r<charHeight; r++) for(int c=0; c<charWidth; c++) if(font[text[i]-' '+1][r*charWidth+c] == '0') set_pixel(x+c, y+r, _penColor);
-		x += charWidth;
-		y = y0;
+		for(int r=0; r<charHeight; r++)
+			for(int c=0; c<charWidth; c++)
+				if(font[text[i]-' '+1][r*charWidth+c] == '0'){
+					for(int ix=0; ix<scale; ix++)
+					for(int iy=0; iy<scale; iy++)
+					set_pixel(_x+c*scale+ix, _y+r*scale+iy, _penColor);
+				}
+		_x += charWidth*scale;
+		_y = y;
 	}
 }
 
@@ -2764,7 +3885,7 @@ std::vector<std::string> IBM_EGA_8x14 = {
 	"-------------------00-----000----0000------00------00------00------00------00----000000-------------------------", // 1
 	"-----------------00000--00---00------00-----00-----00-----00-----00-----00---00-0000000-------------------------", // 2
 	"-----------------00000--00---00------00------00---0000-------00------00-00---00--00000--------------------------", // 3
-	"----------------------------00-----000----0000---00-00--00--00--0000000-----00------00-----0000-----------------", // 4
+	"--------------------00-----000----0000---00-00--00--00--0000000-----00------00-----0000-------------------------", // 4
 	"----------------0000000-00------00------00------000000-------00------00-00---00--00000--------------------------", // 5
 	"------------------000----00-----00------00------000000--00---00-00---00-00---00--00000--------------------------", // 6
 	"----------------0000000-00---00------00-----00-----00-----00------00------00------00----------------------------", // 7
@@ -3302,7 +4423,7 @@ std::vector<std::string> PS2THIN4 = {
 };
 
 
-#endif
+#endif // MRC_IMAGE_HPP
 
 /*****************************************************
 funzioni che potrei aggiungere:

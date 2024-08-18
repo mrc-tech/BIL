@@ -12,7 +12,7 @@ ToDo:
 
 #include "BasicImage.h"
 #include "zlib.h"
-#include "..\utils\png_utils.h"
+#include "../utils/png_utils.h"
 
 #include <iostream> // TEMPORANEO, PER IL DEBUG!!!!!!!!!!!!!!
 
