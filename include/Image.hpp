@@ -67,6 +67,7 @@ class Image
 		void text(int x,int y, std::string text, std::vector<std::string> font, unsigned scale);
 		void ellipse(int centerx, int centery, int a, int b);
 		void insertImage(int x,int y, Image img);
+		void fillrect(int x0,int y0, int x1,int y1);
 		
 		inline void penColor(const byte& R,const byte& G,const byte& B) { _penColor = {R,G,B}; }
 		inline void penColor(const color& c) { _penColor = c; }
@@ -177,6 +178,34 @@ void Image::drawPoint(int x, int y)
 				set_pixel(x+1,y+1, _penColor);
 				}
 				break;
+		case 5: {
+				set_pixel(x-1,y-2, _penColor);
+				set_pixel(x  ,y-2, _penColor);
+				set_pixel(x+1,y-2, _penColor);
+				
+				set_pixel(x-2,y-1, _penColor);
+				set_pixel(x-1,y-1, _penColor);
+				set_pixel(x  ,y-1, _penColor);
+				set_pixel(x+1,y-1, _penColor);
+				set_pixel(x+2,y-1, _penColor);
+				
+				set_pixel(x-2,y  , _penColor);
+				set_pixel(x-1,y  , _penColor);
+				set_pixel(x  ,y  , _penColor);
+				set_pixel(x+1,y  , _penColor);
+				set_pixel(x+2,y  , _penColor);
+				
+				set_pixel(x-2,y+1, _penColor);
+				set_pixel(x-1,y+1, _penColor);
+				set_pixel(x  ,y+1, _penColor);
+				set_pixel(x+1,y+1, _penColor);
+				set_pixel(x+2,y+1, _penColor);
+				
+				set_pixel(x-1,y+2, _penColor);
+				set_pixel(x  ,y+2, _penColor);
+				set_pixel(x+1,y+2, _penColor);
+				}
+				break;
 		default: set_pixel(x,y, _penColor); break;
 	}
 }
@@ -221,6 +250,15 @@ void Image::rect(int x0,int y0,int x1,int y1)
 	line(x0,y0,x0,y1);
 	line(x1,y1,x1,y0);
 	line(x1,y1,x0,y1);
+}
+
+void Image::fillrect(int x0,int y0,int x1,int y1)
+{
+	line(x0,y0,x1,y0);
+	line(x0,y0,x0,y1);
+	line(x1,y1,x1,y0);
+	line(x1,y1,x0,y1);
+	for(int i=(y0<y1?y0:y1); i<=(y0>y1?y0:y1); i++) line(x0,i,x1,i);
 }
 
 void Image::circ(int centerx, int centery, int radius)
