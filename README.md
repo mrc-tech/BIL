@@ -38,26 +38,22 @@ For other, more complex, examples please see `examples` folder.
 
 ## Examples
 
-![Mandelbrot_set](https://user-images.githubusercontent.com/74192712/128616712-8b2ed28f-9759-49a6-aa8d-c4bdda74c2e5.png)
+![Mandelbrot_set](examples/Mandelbrot_set.png)
 
-![Lorentz_system](https://user-images.githubusercontent.com/74192712/128616684-a4f9e877-573b-46f6-ad36-f704f2cc23a7.png)
+![Lorentz_system](examples/Lorentz_system.png)
 
-![Italy_EQ](https://github.com/mrc-tech/Bitmap/assets/74192712/977ff19a-567e-4bc6-a277-3b449da79913)
+![Italy_EQ](examples/Italy_EQ.gif)
 
 
 
 
 ## ToDo
-For the moment this _todo list_ is written in italian. As far as the first contributor comes I'll translate in English.
+For the moment this *todo list* is written in italian. As far as the first contributor comes I'll translate in English...
 
- - fare una classe "Figure" dove le coordinate sono double. La classe Image invece serve per le immagini raster. (non credo ce ne sia bisogno veramente...)
- - fare l'esempio di _Perlin noise_ (studiare meglio come fare)
- - Metodi per generare le figure geometriche fondamentali in `image` (mancano l'arco di cerchio, le splines [Per le splines usare il metodo di Cutmann, vedere come ho fatto in DOS] etc.)
- - inserire un metodo per il `flood-fill` delle figure (studiare bene come fare)
- - Sarebbe interessante anche un modo per "vettorializzare" i dati delle immagini in ingresso. Ma questo è di sicuro più complesso e richiederebbe proprio un altro repository ed un altro progetto.
- - Fare in modo che si possano anche _leggere_ i file PNG e JPG (almeno nella loro più semplice accezione)
- - fare in modo di poter scalare (anche di 2 e 0.5 soltanto) e di ruotare l'immagine (anche solo di +-90 gradi)
- - Fare una routine di *Anti Aliasing* sull'immagine
- - Fare un programma ulteriore (proprio un altro progetto) che trasforma la serie di immagini in un video... (oppure usare `ffmpeg`)
- - Mettere la funzione che disegna uno "squircle" (vedere il video su youtube). che gli dai _r_ e _n_ (capire come disegnare dalla formula). O anche solamente fare un esempio...
- - nell'introduzione di questo readme mettere un link di riferimento anche al futuro repo `HPlotter` che usa BIL per stampare i grafici in png
+- Metodi per generare le figure geometriche fondamentali in `image` (mancano l'arco di cerchio, le splines [Per le splines usare il metodo di Cutmann, vedere come ho fatto in DOS] etc.)
+- inserire un metodo per il `flood-fill` delle figure (studiare bene come fare)
+- Fare in modo che si possano anche _leggere_ i file PNG e JPG (almeno nella loro più semplice accezione)
+- fare in modo di poter scalare (anche di 2 e 0.5 soltanto) e di ruotare l'immagine (anche solo di +-90 gradi)
+- Fare una routine di *Anti Aliasing* sull'immagine
+- Mettere la funzione che disegna uno "squircle" (vedere il video su youtube). che gli dai _r_ e _n_ (capire come disegnare dalla formula). O anche solamente fare un esempio...
+- nell'introduzione di questo readme mettere un link di riferimento anche al futuro repo `HPlotter` che usa BIL per stampare i grafici in _png_
