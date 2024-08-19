@@ -1,3 +1,5 @@
+![cover](examples/cover.png)
+
 # BIL (*Basic Image Library*)
 
 C++ library for images
