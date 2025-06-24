@@ -32,7 +32,7 @@ int main()
    img.save_png("image.png"); // save image as 24-bit PNG file
 }
 ```
-It can be used also the single header-file `Image.h` which includes all the separated nested header files. This file is generated through the automated software [`header-merger`](https://github.com/mrc-tech/header-merger) developed by me.
+It can be used also the single header-file `BIL.h` which includes all the separated nested header files. This file is generated through the automated software [`header-merger`](https://github.com/mrc-tech/header-merger) developed by me.
 
 For other, more complex, examples please see `examples` folder.
 
